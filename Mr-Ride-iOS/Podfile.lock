@@ -1,0 +1,18 @@
+PODS:
+  - Charts (2.2.2):
+    - Charts/Core (= 2.2.2)
+  - Charts/Core (2.2.2)
+  - GoogleMaps (1.13.2)
+  - SWRevealViewController (2.3.0)
+
+DEPENDENCIES:
+  - Charts (= 2.2.2)
+  - GoogleMaps
+  - SWRevealViewController
+
+SPEC CHECKSUMS:
+  Charts: e32b718fa716bdb7693b9e419d6d4a39a3f7992e
+  GoogleMaps: b20a103ff307f58392e603cf142e59d7e30374c1
+  SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
+
+COCOAPODS: 0.39.0
