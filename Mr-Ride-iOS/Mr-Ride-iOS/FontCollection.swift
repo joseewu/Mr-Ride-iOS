@@ -30,6 +30,10 @@ extension UIFont{
         return UIFont.systemFontOfSize(30.0, weight: UIFontWeightRegular)
     }
     
+    class func mrRobot() -> UIFont? {
+        return UIFont(name: "RobotoMono-Light", size: 30)
+    }
+    
     class func mrTextStyle9Font() -> UIFont {
         return UIFont.systemFontOfSize(30.0, weight: UIFontWeightRegular)
     }
@@ -81,4 +85,20 @@ extension UIFont{
     class func mrTextStyle20Font() -> UIFont {
         return UIFont.systemFontOfSize(12.0, weight: UIFontWeightRegular)
     }
+    class func mrtextStyle25Font() -> UIFont {
+        return UIFont.systemFontOfSize(12.0, weight: UIFontWeightMedium)
+    }
+    class func mrtextStyle21Font() -> UIFont {
+        return UIFont.systemFontOfSize(60.0, weight: UIFontWeightBold)
+    }
+    class func mrtextStyle22Font() -> UIFont {
+        return UIFont.systemFontOfSize(14.0, weight: UIFontWeightRegular)
+    }
+    class func mrtextStyle23Font() -> UIFont {
+        return UIFont.systemFontOfSize(12.0, weight: UIFontWeightRegular)
+    }
+    class func mrtextStyle24Font() -> UIFont {
+        return UIFont.systemFontOfSize(20.0, weight: UIFontWeightRegular)
+    }
+    
 }

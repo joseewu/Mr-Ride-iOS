@@ -10,13 +10,15 @@
 import UIKit
 import QuartzCore
 import SWRevealViewController
+import Charts
 
 class ViewController: UIViewController {
     
     @IBOutlet weak var naviLeftBut: UIButton!
     
     
-
+    
+    @IBOutlet weak var lineChartView: LineChartView!
     
     @IBOutlet weak var letsRideBut: UIButton!
     @IBOutlet weak var roundView: UIView!
@@ -31,19 +33,20 @@ class ViewController: UIViewController {
     @IBOutlet weak var labelFixed3: UILabel!
     
     @IBOutlet weak var meanSpeed: UILabel!
+    private var userDefaltkm = NSUserDefaults.standardUserDefaults()
+    private var totoalDist = 0.0
+    private var totalTimes = 0
     let statisticalData = StatisticalModel()
     override func viewDidLoad() {
         
         
         super.viewDidLoad()
         
-        print(self)
         let days = statisticalData._stt.days
         let rideDistance = statisticalData._stt.rideDistance
-        //        let days = ["1", "2", "3", "4", "5", "6"]
-        //        let rideDistance = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0]
         
         
+        getData()
         setUp()
         setUpLebelColor()
         setUpLebelContext()
@@ -52,12 +55,26 @@ class ViewController: UIViewController {
         setUpTitleView()
         setUpLetsRidebut()
         setupRevealViewController()
-        //setChart(days,values: rideDistance)
+        setChart(days,values: rideDistance)
+        
         
         
     }
     
-    
+    func getData(){
+        
+        if (userDefaltkm.objectForKey("TotalDistance")  == nil){
+            totoalDist = 0.0
+            
+        }else{
+            
+            totoalDist = userDefaltkm.doubleForKey("TotalDistance")
+            totalTimes = userDefaltkm.integerForKey("Times")
+            //print("did clear!")
+            //            userDefaltkm.setDouble(0.0, forKey: "TotalDistance")
+            //            userDefaltkm.synchronize()
+        }
+    }
     
     @IBAction func startRunBut(sender: UIButton) {
         
@@ -106,60 +123,63 @@ class ViewController: UIViewController {
     }
     func setUpLebelContext(){
         
+        let convertString = String(format: "%.01f" , totoalDist)
+        
         self.labelFixed1.text = "Total Distance"
         self.labelFixed2.text = "Total Counts"
         self.labelFixed3.text = "Average Speed"
-        self.totalDistance.text = "12.5 km"
-        self.totalCount.text = "14 times"
-        self.meanSpeed.text = "8 km/h"
+        self.totalDistance.text = convertString + " km"
+        self.totalCount.text = "\(totalTimes)" + " times"
+        self.meanSpeed.text = "18 km/h"
+        
         
         
     }
-//    func setChart(dataPoints:[String], values:[Double]){
-//        
-//        
-//        var dataEntries:[ChartDataEntry] = []
-//        for i in 0..<dataPoints.count {
-//            let dataEntry  = ChartDataEntry(value: values[i], xIndex: i)
-//            dataEntries.append(dataEntry)
-//        }
-//        let lineChartDataSet = LineChartDataSet(yVals: dataEntries, label: "")
-//        
-//        let gradColors = [UIColor.mrSeafoamBlueColor(), UIColor.mrLightblueColor()]
-//        let colorLocate:[CGFloat] = [0.0, 1.0]
-//        if let gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), gradColors, colorLocate){
-//            print("here")
-//            
-//            //ChartFill.fillWithLinearGradient(gradient, angle: 90.0)
-//            
-//            
-//        }
-//        
-//        lineChartDataSet.fillColor = UIColor.mrDarkSlateBlueColor()
-//        lineChartDataSet.drawCirclesEnabled = false
-//        lineChartDataSet.drawFilledEnabled = true
-//        lineChartDataSet.drawValuesEnabled = false
-//        lineChartDataSet.drawCubicEnabled = true
-//        lineChartDataSet.lineWidth = 0.0
-//        
-//        
-//        let lineChartData = LineChartData(xVals: dataPoints, dataSet: lineChartDataSet)
-//        
-//        
-//        lineChartView.data = lineChartData
-//        
-//        lineChartView.backgroundColor = UIColor.mrLightblueColor()
-//        lineChartView.gridBackgroundColor = UIColor.mrWaterBlueColor()
-//        lineChartView.drawGridBackgroundEnabled = false
-//        lineChartView.descriptionTextColor = UIColor.clearColor()
-//        lineChartView.xAxis.enabled = false
-//        lineChartView.leftAxis.enabled = false
-//        lineChartView.rightAxis.enabled = false
-//        lineChartView.legend.enabled = false
-//        
-//        
-//        
-//    }
+    func setChart(dataPoints:[String], values:[Double]){
+        
+        
+        var dataEntries:[ChartDataEntry] = []
+        for i in 0..<dataPoints.count {
+            let dataEntry  = ChartDataEntry(value: values[i], xIndex: i)
+            dataEntries.append(dataEntry)
+        }
+        let lineChartDataSet = LineChartDataSet(yVals: dataEntries, label: "")
+        
+        let gradColors = [UIColor.mrSeafoamBlueColor(), UIColor.mrLightblueColor()]
+        let colorLocate:[CGFloat] = [0.0, 1.0]
+        if let gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), gradColors, colorLocate){
+            print("here")
+            
+            //ChartFill.fillWithLinearGradient(gradient, angle: 90.0)
+            
+            
+        }
+        
+        lineChartDataSet.fillColor = UIColor.mrDarkSlateBlueColor()
+        lineChartDataSet.drawCirclesEnabled = false
+        lineChartDataSet.drawFilledEnabled = true
+        lineChartDataSet.drawValuesEnabled = false
+        lineChartDataSet.drawCubicEnabled = true
+        lineChartDataSet.lineWidth = 0.0
+        
+        
+        let lineChartData = LineChartData(xVals: dataPoints, dataSet: lineChartDataSet)
+        
+        
+        lineChartView.data = lineChartData
+        
+        lineChartView.backgroundColor = UIColor.mrLightblueColor()
+        lineChartView.gridBackgroundColor = UIColor.mrWaterBlueColor()
+        lineChartView.drawGridBackgroundEnabled = false
+        lineChartView.descriptionTextColor = UIColor.clearColor()
+        lineChartView.xAxis.enabled = false
+        lineChartView.leftAxis.enabled = false
+        lineChartView.rightAxis.enabled = false
+        lineChartView.legend.enabled = false
+        
+        
+        
+    }
     
     func setupRevealViewController() {
         
@@ -215,6 +235,4 @@ class ViewController: UIViewController {
     
     
 }
-
-
 
