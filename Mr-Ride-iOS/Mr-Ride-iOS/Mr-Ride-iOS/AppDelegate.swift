@@ -9,10 +9,19 @@
 import UIKit
 import CoreData
 import GoogleMaps
+import FBSDKCoreKit
+import FBSDKLoginKit
+import FBSDKShareKit
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        
+        return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
+    }
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -21,6 +30,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GMSServices.provideAPIKey("AIzaSyB5gi9e020nSNQPtt0aDEi7h4XvEfML_Hk")
         
         return true
+    }
+    func logindidFinished(){
+        
+        let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let rootController = storyboard.instantiateViewControllerWithIdentifier("SWRevealViewController")
+        
+        self.window?.rootViewController = rootController
+        
     }
 
     func applicationWillResignActive(application: UIApplication) {

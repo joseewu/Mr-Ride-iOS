@@ -14,10 +14,14 @@ import CoreLocation
 
 class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewDelegate{
     
+    
+    
     @IBOutlet weak var mapView: GMSMapView!
     let gradientLayer1 = CAGradientLayer()
     let gradientLayer2 = CAGradientLayer()
     private let managedContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
+    
     private var locationManager = CLLocationManager()
     @IBOutlet weak var BackToHome: UIButton!
     
@@ -60,7 +64,7 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
         loadCoreData()
         setUpGardientLayer()
         setUpCloseButton()
-        //showMap()
+        
         setUpLabels()
         
         drawRoute(self.latForPath,locationLong: self.longForPath)
@@ -119,6 +123,7 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
     func drawRoute(locationLat: [[Double]], locationLong: [[Double]]){
         print(locationLat)
         showMap()
+        
         var path = GMSMutablePath()
         for i in 0..<locationLat.count {
             
@@ -247,12 +252,15 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
                 
             }else{
                 
-                var lat1 = arg1[i].first!
-                var long1 = arg2[i].first!
-                var lat2 = arg1[i].last!
-                var long2 = arg2[i].last!
+                var latRemovingNil = arg1[i].filter { $0 != nil }
+                var longRemovingNil = arg2[i].filter { $0 != nil }
+                
+                var lat1 = latRemovingNil.first!
+                var long1 = longRemovingNil.first!
+                var lat2 = latRemovingNil.last!
+                var long2 = longRemovingNil.last
                 self.latForPath.append([lat1,lat2])
-                self.longForPath.append([long1,long2])
+                self.longForPath.append([long1,long2!])
                 
             }
             
