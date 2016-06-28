@@ -8,6 +8,10 @@
 
 import Foundation
 import Alamofire
+import CoreData
+private let managedContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+
+private var userDefaltkm = NSUserDefaults.standardUserDefaults()
 
 struct YouBikeModel {
     
@@ -35,27 +39,50 @@ class DataTaipeiModel {
     var youbikeData = [YouBikeModel]()
     var toiletData = [ToiletModel]()
     
+    
+    
+    
     func requestYouBikesFromURL(url:String){
         
         let url2 = "http://data.taipei/youbike"
-        Alamofire.request(.GET, url2).validate().responseJSON{ response
+        Alamofire.request(.GET, url2).validate().responseJSON{ [weak self] response
             in
             if response.result.isSuccess{
                 
                 if let dataResults = response.result.value as? [String:AnyObject]{
-                    self.parsingYouBikes(dataResults)
+                    self?.parsingYouBikes(dataResults)
+                    
+                    if let ubikes = NSEntityDescription.insertNewObjectForEntityForName("Ubikes", inManagedObjectContext: managedContext) as? Ubikes{
+                        for bike in self!.youbikeData{
+                            ubikes.name = bike.stationName
+                            ubikes.numbers = bike.remainingBikes
+                            ubikes.lat = bike.lat
+                            ubikes.long = bike.lng
+                            ubikes.roadName = bike.roadName
+                            
+                        }
+                        do{
+                            try managedContext.save()
+                            userDefaltkm.setBool(true, forKey: "CoreData")
+                        }catch{
+                            print("Ubikes core Data enconter error!")
+                        }
+                        
+                    }
                 }
             }else{
-                print(response.result.error)
+                print("ERROR when getting data \(response.result.error)")
             }
         }
         
     }
     func parsingYouBikes(inputData:[String:AnyObject]){
         
+        
         if let retVal = inputData["retVal"] as? [String:AnyObject]{
             for (_,everyStation) in retVal{
                 if let eachStation = everyStation as? [String:AnyObject]{
+                    
                     var stationName = eachStation["sna"] as? String ?? ""
                     var roadName = eachStation["ar"] as? String ?? ""
                     var lat = eachStation["lat"] as? String ?? "0.0"
@@ -80,21 +107,42 @@ class DataTaipeiModel {
     func requestToiletsFromURL(url:String){
         
         let url2 = "http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=008ed7cf-2340-4bc4-89b0-e258a5573be2"
-        
-        Alamofire.request(.GET, url2).validate().responseJSON{ response
-            in
-            if response.result.isSuccess{
-                if let data = response.result.value as? [String:AnyObject]{
+        dispatch_async(dispatch_get_main_queue(),{
+            
+            
+            Alamofire.request(.GET, url2).validate().responseJSON{ [weak self] response in
+                if response.result.isSuccess{
+                    if let data = response.result.value as? [String:AnyObject]{
+                        
+                        self?.parcingData(data)
+                        
+                        if let toilets = NSEntityDescription.insertNewObjectForEntityForName("Toilets", inManagedObjectContext: managedContext) as? Toilets{
+                            for toilet in self!.toiletData{
+                                
+                                toilets.toiletName = toilet.toiletName
+                                toilets.lat = toilet.lat
+                                toilets.long = toilet.lng
+                                toilets.address = toilet.toiletName
+                                
+                            }
+                            do{
+                                try managedContext.save()
+                                userDefaltkm.setBool(true, forKey: "CoreData")
+                            }catch{
+                                print("Toilet core Data enconter error!")
+                            }
+                            
+                            
+                        }
+                        
+                    }
                     
-                    self.parcingData(data)
-                    
+                }else{
+                    print("ERROR when getting data \(response.result.error)")
                 }
                 
-            }else{
-                print(response.result.error)
             }
-            
-        }
+        })
         
     }
     
@@ -126,6 +174,66 @@ class DataTaipeiModel {
                 }
             }
         }
+        
+    }
+    
+    func cleanUpToiletsData(){
+        
+        let request = NSFetchRequest(entityName: "Toilets")
+        
+        do {
+            
+            let records:NSArray = try managedContext.executeFetchRequest(request)
+            
+            for record in records {
+                
+                managedContext.deleteObject(record as! NSManagedObject)
+                
+            }
+            do{
+                try managedContext.save()
+                userDefaltkm.setBool(false, forKey: "CoreData")
+            }catch{
+                
+                fatalError("Failure to save context: \(error)")
+            }
+            
+            
+        }catch{
+            fatalError("Failure to fetch data: \(error)")
+        }
+        
+        
+    }
+    func cleanUpUbikesData(){
+        
+        let request = NSFetchRequest(entityName: "Ubikes")
+        
+        do {
+            
+            let records:NSArray = try managedContext.executeFetchRequest(request)
+            
+            
+            
+            for record in records {
+                
+                managedContext.deleteObject(record as! NSManagedObject)
+                
+            }
+            do{
+                try managedContext.save()
+                userDefaltkm.setBool(false, forKey: "CoreData")
+                
+            }catch{
+                
+                fatalError("Failure to save context: \(error)")
+            }
+            
+            
+        }catch{
+            fatalError("Failure to fetch data: \(error)")
+        }
+        
         
     }
     

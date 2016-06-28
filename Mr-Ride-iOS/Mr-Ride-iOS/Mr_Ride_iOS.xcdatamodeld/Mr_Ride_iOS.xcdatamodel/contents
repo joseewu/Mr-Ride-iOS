@@ -10,7 +10,22 @@
         <attribute name="time" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="timeString" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="Toilets" representedClassName=".Toilets" syncable="YES">
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="long" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="toiletName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Ubikes" representedClassName=".Ubikes" syncable="YES">
+        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="long" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="numbers" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="roadName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
         <element name="RunRecords" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="Toilets" positionX="-63" positionY="45" width="128" height="105"/>
+        <element name="Ubikes" positionX="-54" positionY="54" width="128" height="120"/>
     </elements>
 </model>

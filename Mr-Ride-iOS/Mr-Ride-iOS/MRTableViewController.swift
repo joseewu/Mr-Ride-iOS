@@ -72,18 +72,15 @@ class MRTableViewController: UITableViewController {
             let vc = self.storyboard?.instantiateViewControllerWithIdentifier("HomeNavi") as! UINavigationController
             let  segueToHome = SWRevealViewControllerSeguePushController.init(identifier: SWSegueRearIdentifier, source: self, destination: vc)
             segueToHome.perform()
-            print(indexPath.row)
         case 2:
             let vc = self.storyboard?.instantiateViewControllerWithIdentifier("HistoryNavi") as! UINavigationController
             let  segueToHistory = SWRevealViewControllerSeguePushController.init(identifier: SWSegueRearIdentifier, source: self, destination: vc)
             segueToHistory.perform()
-            print(indexPath.row)
             
         case 3:
             let vc = self.storyboard?.instantiateViewControllerWithIdentifier("mapInfoNavi") as! UINavigationController
             let  segueToMapInfo = SWRevealViewControllerSeguePushController.init(identifier: SWSegueRearIdentifier, source: self, destination: vc)
             segueToMapInfo.perform()
-            print(indexPath.row)
         default: return
         }
     }

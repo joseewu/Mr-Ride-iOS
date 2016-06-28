@@ -39,7 +39,7 @@ class ViewController: UIViewController {
     private var totoalDist = 0.0
     private var totalTimes = 0
     let statisticalData = StatisticalModel()
-    
+    private var dataTaipei = DataTaipeiModel()
     override func viewDidLoad() {
         
         
@@ -60,11 +60,23 @@ class ViewController: UIViewController {
         setUpLetsRidebut()
         setupRevealViewController()
         setChart(days,values: rideDistance)
-        
+        updateCoreData()
+       
         
         
     }
     
+    func updateCoreData(){
+        
+        if (userDefaltkm.boolForKey("CoreData") == false){
+            print("Fetching data....")
+            dataTaipei.requestToiletsFromURL("")
+            dataTaipei.requestYouBikesFromURL("")
+        }else{
+            print("Data exist!")
+        }
+        
+    }
     func getData(){
         
         if (userDefaltkm.objectForKey("TotalDistance")  == nil){
@@ -145,6 +157,7 @@ class ViewController: UIViewController {
         
         
         var dataEntries:[ChartDataEntry] = []
+        
         for i in 0..<dataPoints.count {
             let dataEntry  = ChartDataEntry(value: values[i], xIndex: i)
             dataEntries.append(dataEntry)

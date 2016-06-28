@@ -15,6 +15,7 @@ import FBSDKShareKit
 import Fabric
 import Crashlytics
 import Amplitude_iOS
+import Google
 
 
 @UIApplicationMain
@@ -38,6 +39,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.logUser()
         //amplitude zone
         Amplitude.instance().initializeApiKey("15a205b0796949b393d119ecdd34cd97")
+        //Google analytics zone
+        var configureError:NSError?
+        GGLContext.sharedInstance().configureWithError(&configureError)
+        assert(configureError == nil, "Error configuring Google services: \(configureError)")
+        let gai = GAI.sharedInstance()
+        gai.trackUncaughtExceptions = true
+        gai.logger.logLevel = GAILogLevel.Verbose
+        
         
         
         return true

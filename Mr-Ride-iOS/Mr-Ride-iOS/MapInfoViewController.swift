@@ -10,7 +10,8 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource {
+
+class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource,CLLocationManagerDelegate,MKMapViewDelegate {
     
     @IBOutlet weak var naviLeftBut: UIButton!
     @IBOutlet weak var mapView: MKMapView!
@@ -19,22 +20,52 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
     @IBOutlet weak var lookForLabel: UILabel!
     @IBOutlet weak var pickView: UIPickerView!
     private let locationMannager = CLLocationManager()
-    private let dataModel = DataTaipeiModel()
     private let chooseName = ["Ubike Station","Toilet"]
     private var pickerBar = UIView()
+    private var currentLocation:CLLocation?{
+        didSet{
+            setupMap()
+            locationMannager.stopUpdatingLocation()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.pickView.delegate = self
         self.pickView.dataSource = self
+        self.mapView.delegate = self
+        locationMannager.delegate = self
         setUp()
+        fetchLocation()
         setNavigationBar()
         setLeftBarButton()
         //setUpPickerView()
         setupRevealViewController()
         setUpBut()
-        //dataModel.requestToiletsFromURL("")
-        //dataModel.requestYouBikesFromURL("")
         pickView.hidden = true
+        
+        
+    }
+    func fetchLocation(){
+       locationMannager.startUpdatingLocation()
+        locationMannager.desiredAccuracy = kCLLocationAccuracyBest
+        locationMannager.requestWhenInUseAuthorization()
+        
+    }
+    
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        self.currentLocation = locations.last!
+//        let center = CLLocationCoordinate2D(latitude: locationValue.coordinate.latitude, longitude: locationValue.coordinate.longitude)
+//        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpanMake(0.018, 0.018))
+        
+    }
+    func setupMap(){
+        
+        self.mapView.showsUserLocation = true
+        let center = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
+        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpanMake(0.018, 0.018))
+        self.mapView.setRegion(region, animated: true)
     }
     func setUpBut(){
         self.popUpPiker.backgroundColor = UIColor.whiteColor()
