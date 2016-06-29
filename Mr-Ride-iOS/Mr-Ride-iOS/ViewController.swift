@@ -13,7 +13,8 @@ import SWRevealViewController
 import Charts
 import Crashlytics
 import Amplitude_iOS
-
+import CoreData
+private let managedContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 class ViewController: UIViewController {
     
     @IBOutlet weak var naviLeftBut: UIButton!
@@ -46,6 +47,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         Amplitude.instance().logEvent("view_in_home")
+        
+        
         let days = statisticalData._stt.days
         let rideDistance = statisticalData._stt.rideDistance
         
@@ -61,11 +64,32 @@ class ViewController: UIViewController {
         setupRevealViewController()
         setChart(days,values: rideDistance)
         updateCoreData()
-       
+//       cleanUpCoreData("Toilets")
+//        cleanUpCoreData("RunRecords")
+//        cleanUpCoreData("Ubikes")
         
         
     }
-    
+    private func cleanUpCoreData(en:String){
+        
+        var request = NSFetchRequest(entityName: en)
+        
+        //request.returnsObjectsAsFaults = false
+        do {
+            var res:NSManagedObject!
+            var results = try managedContext.executeFetchRequest(request)
+            for res:AnyObject in results {
+                managedContext.deleteObject(res as! NSManagedObject)
+            }
+            results.removeAll(keepCapacity: false)
+            
+            try managedContext.save()
+            
+        }catch{
+        }
+        userDefaltkm.setBool(false, forKey: "CoreData")
+
+    }
     func updateCoreData(){
         
         if (userDefaltkm.boolForKey("CoreData") == false){

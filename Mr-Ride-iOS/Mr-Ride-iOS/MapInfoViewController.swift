@@ -9,9 +9,22 @@
 import UIKit
 import MapKit
 import CoreLocation
+import FBAnnotationClusteringSwift
+import CoreData
 
+private let managedContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
-class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource,CLLocationManagerDelegate,MKMapViewDelegate {
+extension MapInfoViewController : FBClusteringManagerDelegate {
+    
+    public func cellSizeFactorForCoordinator(coordinator:FBClusteringManager) -> CGFloat{
+        return 1.0
+    }
+    
+}
+class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource,CLLocationManagerDelegate {
+    
+    let clusteringManager = FBClusteringManager()
+    
     
     @IBOutlet weak var naviLeftBut: UIButton!
     @IBOutlet weak var mapView: MKMapView!
@@ -35,6 +48,7 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         self.pickView.dataSource = self
         self.mapView.delegate = self
         locationMannager.delegate = self
+        clusteringManager.delegate = self
         setUp()
         fetchLocation()
         setNavigationBar()
@@ -43,22 +57,63 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         setupRevealViewController()
         setUpBut()
         pickView.hidden = true
+        let array:[MKAnnotation] = queringDataTipei(entity: "Toilets")
+        clusteringManager.addAnnotations(array)
         
         
     }
     func fetchLocation(){
-       locationMannager.startUpdatingLocation()
+        
+        locationMannager.startUpdatingLocation()
         locationMannager.desiredAccuracy = kCLLocationAccuracyBest
         locationMannager.requestWhenInUseAuthorization()
         
     }
     
+    func queringDataTipei(entity en: String) -> [FBAnnotation]{
+        
+        var array:[FBAnnotation] = []
+        
+        
+        var request = NSFetchRequest(entityName: "Toilets")
+        request.returnsObjectsAsFaults = false
+        
+        do{
+            
+            var results:NSArray = try managedContext.executeFetchRequest(request)
+            
+            if (results.count > 0){
+                
+                for result in results {
+                    
+                    if let res = result as? Toilets {
+                        
+                        let a:FBAnnotation = FBAnnotation()
+                        a.coordinate = CLLocationCoordinate2D(latitude: Double(res.lat!), longitude: Double(res.long!) )
+                        a.title = res.toiletName
+                        a.subtitle = res.address
+                        array.append(a)
+                    }
+                }
+            }
+        }catch{
+            print("No data exist!")
+        }
+        
+        
+        //        for _ in 0...4 {
+        //            let a:FBAnnotation = FBAnnotation()
+        //            a.coordinate = CLLocationCoordinate2D(latitude: drand48() * 40 - 20, longitude: drand48() * 80 - 40 )
+        //            a.title = "no"
+        //            array.append(a)
+        //        }
+        return array
+    }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         self.currentLocation = locations.last!
-//        let center = CLLocationCoordinate2D(latitude: locationValue.coordinate.latitude, longitude: locationValue.coordinate.longitude)
-//        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpanMake(0.018, 0.018))
-        
+        //        let center = CLLocationCoordinate2D(latitude: locationValue.coordinate.latitude, longitude: locationValue.coordinate.longitude)
+        //        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpanMake(0.018, 0.018))
     }
     func setupMap(){
         
@@ -159,3 +214,91 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
     */
     
 }
+
+extension MapInfoViewController: MKMapViewDelegate {
+    
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool){
+        
+        NSOperationQueue().addOperationWithBlock({
+            
+            let mapBoundsWidth = Double(self.mapView.bounds.size.width)
+            
+            let mapRectWidth:Double = self.mapView.visibleMapRect.size.width
+            
+            let scale:Double = mapBoundsWidth / mapRectWidth
+            
+            let annotationArray = self.clusteringManager.clusteredAnnotationsWithinMapRect(self.mapView.visibleMapRect, withZoomScale:scale)
+            
+            self.clusteringManager.displayAnnotations(annotationArray, onMapView:self.mapView)
+            
+        })
+        
+    }
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        if annotation is MKUserLocation {
+            //return nil so map view draws "blue dot" for standard user location
+            return nil
+        }
+        
+        var reuseId = ""
+        
+        if annotation.isKindOfClass(FBAnnotationCluster) {
+            
+            reuseId = "Cluster"
+            var clusterView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId)
+            
+            clusterView = FBAnnotationClusterView(annotation: annotation, reuseIdentifier: reuseId, options: nil)
+            clusterView?.selected  = true
+            clusterView?.setSelected(true, animated: true)
+            return clusterView
+            
+        } else {
+            let countLabel:UIView?
+            var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier("pin")
+            
+            
+            //var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId)
+            if pinView == nil {
+                
+                pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+                let image = UIImage(named: "icon-station.png")
+                
+                pinView!.canShowCallout = true
+                pinView?.frame = CGRectMake(0,0,(image?.size.width)!,(image?.size.height)!)
+                
+                pinView!.layer.cornerRadius = pinView!.bounds.height / 2
+                print("bound: \(pinView?.bounds)")
+                print("corner: \(pinView?.layer.cornerRadius)")
+//                pinView!.layer.masksToBounds = true
+                pinView!.backgroundColor = UIColor.whiteColor()
+                
+                pinView?.image = image
+                //pinView?.addSubview(img.view)
+                //countLabel = UIView(frame: pinView!.bounds)
+                
+                
+                
+                //pinView?.addSubview(countLabel!)
+                //pinView?.insertSubview(countLabel!, atIndex: 0)
+                
+                
+            }
+            else {
+                pinView!.annotation = annotation
+            }
+            
+            return pinView
+            //            pinView?.image = UIImage(named: "icon-toilet")
+            //            pinView?.setSelected(true, animated: true)
+            //
+            //            return pinView
+        }
+        
+        
+    }
+    
+    
+}
+

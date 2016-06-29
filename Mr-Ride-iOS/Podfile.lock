@@ -10,6 +10,7 @@ PODS:
   - Charts (2.2.2):
     - Charts/Core (= 2.2.2)
   - Charts/Core (2.2.2)
+  - FBAnnotationClusteringSwift (1.0.1)
   - FBSDKCoreKit (4.13.1):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.13.1):
@@ -41,6 +42,7 @@ DEPENDENCIES:
   - Amplitude-iOS (~> 3.7.0)
   - Bolts
   - Charts (= 2.2.2)
+  - FBAnnotationClusteringSwift
   - FBSDKCoreKit
   - FBSDKLoginKit
   - FBSDKShareKit
@@ -53,6 +55,7 @@ SPEC CHECKSUMS:
   Amplitude-iOS: 8bc8b9dc9c1898dbe5da541e21e8941ec085644f
   Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
   Charts: e32b718fa716bdb7693b9e419d6d4a39a3f7992e
+  FBAnnotationClusteringSwift: a1f4c07f5472b13acd69de04c61e68e2d7daaad3
   FBSDKCoreKit: 2807fe0da2ddb49a1469da6d6ff597f99912980f
   FBSDKLoginKit: 6d350cb6a22d6956e9d078885de6ee8a0ebc51b4
   FBSDKShareKit: c9438df7573b33780ac8c3451201c5ebb260ffca

@@ -52,23 +52,28 @@ class DataTaipeiModel {
                 if let dataResults = response.result.value as? [String:AnyObject]{
                     self?.parsingYouBikes(dataResults)
                     
-                    if let ubikes = NSEntityDescription.insertNewObjectForEntityForName("Ubikes", inManagedObjectContext: managedContext) as? Ubikes{
-                        for bike in self!.youbikeData{
-                            ubikes.name = bike.stationName
-                            ubikes.numbers = bike.remainingBikes
-                            ubikes.lat = bike.lat
-                            ubikes.long = bike.lng
-                            ubikes.roadName = bike.roadName
+                    for bike in self!.youbikeData{
+                        
+                        if let ubikes = NSEntityDescription.insertNewObjectForEntityForName("Ubikes", inManagedObjectContext: managedContext) as? Ubikes{
                             
-                        }
-                        do{
-                            try managedContext.save()
-                            userDefaltkm.setBool(true, forKey: "CoreData")
-                        }catch{
-                            print("Ubikes core Data enconter error!")
+                                ubikes.name = bike.stationName
+                                ubikes.numbers = bike.remainingBikes
+                                ubikes.lat = bike.lat
+                                ubikes.long = bike.lng
+                                ubikes.roadName = bike.roadName
+                            
+                            do{
+                                try managedContext.save()
+                                
+                            }catch{
+                                print("Ubikes core Data enconter error!")
+                            }
+                            
                         }
                         
                     }
+                    userDefaltkm.setBool(true, forKey: "CoreData")
+                   
                 }
             }else{
                 print("ERROR when getting data \(response.result.error)")
@@ -116,24 +121,27 @@ class DataTaipeiModel {
                         
                         self?.parcingData(data)
                         
-                        if let toilets = NSEntityDescription.insertNewObjectForEntityForName("Toilets", inManagedObjectContext: managedContext) as? Toilets{
-                            for toilet in self!.toiletData{
+                        for toilet in self!.toiletData{
+                            
+                            if let toilets = NSEntityDescription.insertNewObjectForEntityForName("Toilets", inManagedObjectContext: managedContext) as? Toilets{
                                 
                                 toilets.toiletName = toilet.toiletName
                                 toilets.lat = toilet.lat
                                 toilets.long = toilet.lng
                                 toilets.address = toilet.toiletName
                                 
+                                do{
+                                    try managedContext.save()
+                                    
+                                    
+                                }catch{
+                                    print("Toilet core Data enconter error!")
+                                }
+
                             }
-                            do{
-                                try managedContext.save()
-                                userDefaltkm.setBool(true, forKey: "CoreData")
-                            }catch{
-                                print("Toilet core Data enconter error!")
-                            }
-                            
                             
                         }
+                        userDefaltkm.setBool(true, forKey: "CoreData")
                         
                     }
                     
