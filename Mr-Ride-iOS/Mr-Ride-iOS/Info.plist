@@ -24,7 +24,10 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb642155339276277</string>
+				<string>iosMrRide</string>
 			</array>
+			<key>CFBundleURLName</key>
+			<string>com.iosMrRide</string>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>

@@ -13,7 +13,9 @@ extension UIFont{
     class func mrTextStyleFont() -> UIFont? {
         return UIFont(name: "Helvetica-Bold", size: 80.0)
     }
-    
+    class func mrtextStyle28Font() -> UIFont {
+        return UIFont.systemFontOfSize(17.0, weight: UIFontWeightMedium)
+    }
     class func mrTextStyle14Font() -> UIFont {
         return UIFont.systemFontOfSize(80.0, weight: UIFontWeightBold)
     }

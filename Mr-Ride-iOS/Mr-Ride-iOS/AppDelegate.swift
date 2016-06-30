@@ -16,7 +16,7 @@ import Fabric
 import Crashlytics
 import Amplitude_iOS
 import Google
-
+import Soundcloud
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -31,7 +31,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         UIApplication.sharedApplication().statusBarStyle = .LightContent
-        
+        //soundcloud 
+        Soundcloud.clientIdentifier = "70dd6cb1f3807a0d2032161d666b5f87"
+        Soundcloud.clientSecret = "74ee9d23325f63db4a93446d4ea8e44c"
+        Soundcloud.redirectURI = "http://dailystream.com/callback"
         GMSServices.provideAPIKey("AIzaSyB5gi9e020nSNQPtt0aDEi7h4XvEfML_Hk")
         Fabric.with([Crashlytics.self])
         // TODO: Move this to where you establish a user session
@@ -50,6 +53,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         return true
+    }
+    func didLogInSoundCloud(){
+     print("finished login")
     }
     
     func logUser() {

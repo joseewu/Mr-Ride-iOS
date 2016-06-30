@@ -25,6 +25,10 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
     
     let clusteringManager = FBClusteringManager()
     
+    @IBOutlet weak var pickerBar: UIView!
+    @IBOutlet weak var pickBarDone: UIButton!
+    @IBOutlet weak var pickBarTitle: UILabel!
+    @IBOutlet weak var pickBarCancel: UIButton!
     
     @IBOutlet weak var naviLeftBut: UIButton!
     @IBOutlet weak var mapView: MKMapView!
@@ -34,13 +38,25 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
     @IBOutlet weak var pickView: UIPickerView!
     private let locationMannager = CLLocationManager()
     private let chooseName = ["Ubike Station","Toilet"]
-    private var pickerBar = UIView()
+    private let entityName = ["Ubikes","Toilets"]
+    var image = UIImage(named: "icon-station.png")
+    private var array:[MKAnnotation] = []
+    private var userChoose:String?{
+        didSet{
+            mapView.removeAnnotations(array)
+            
+            image = UIImage(named: "icon-toilet")
+            quering(userChoose!)
+            userChoose?.removeAll()
+        }
+    }
     private var currentLocation:CLLocation?{
         didSet{
             setupMap()
             locationMannager.stopUpdatingLocation()
         }
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,8 +72,8 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         //setUpPickerView()
         setupRevealViewController()
         setUpBut()
-        pickView.hidden = true
-        let array:[MKAnnotation] = queringDataTipei(entity: "Toilets")
+        viewDisapear()
+        self.array = queringDataUbike(entity: "Ubikes")
         clusteringManager.addAnnotations(array)
         
         
@@ -69,13 +85,23 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         locationMannager.requestWhenInUseAuthorization()
         
     }
+    func quering(en:String){
+        if en == "Toilets"{
+            self.array = queringDataToilets(entity: "Toilets")
+        }else{
+            self.array = queringDataUbike(entity: "Ubikes")
+        }
+        clusteringManager.addAnnotations(array)
+
+    }
     
-    func queringDataTipei(entity en: String) -> [FBAnnotation]{
+    
+    func queringDataToilets(entity en: String) -> [FBAnnotation]{
         
         var array:[FBAnnotation] = []
         
         
-        var request = NSFetchRequest(entityName: "Toilets")
+        var request = NSFetchRequest(entityName: en)
         request.returnsObjectsAsFaults = false
         
         do{
@@ -100,16 +126,40 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
             print("No data exist!")
         }
         
-        
-        //        for _ in 0...4 {
-        //            let a:FBAnnotation = FBAnnotation()
-        //            a.coordinate = CLLocationCoordinate2D(latitude: drand48() * 40 - 20, longitude: drand48() * 80 - 40 )
-        //            a.title = "no"
-        //            array.append(a)
-        //        }
         return array
     }
-    
+    func queringDataUbike(entity en: String) -> [FBAnnotation]{
+        
+        var array:[FBAnnotation] = []
+        
+        
+        var request = NSFetchRequest(entityName: en)
+        request.returnsObjectsAsFaults = false
+        
+        do{
+            
+            var results:NSArray = try managedContext.executeFetchRequest(request)
+            
+            if (results.count > 0){
+                
+                for result in results {
+                    
+                    if let res = result as? Ubikes {
+                        
+                        let a:FBAnnotation = FBAnnotation()
+                        a.coordinate = CLLocationCoordinate2D(latitude: Double(res.lat!), longitude: Double(res.long!) )
+                        a.title = res.name
+                        a.subtitle = res.roadName
+                        array.append(a)
+                    }
+                }
+            }
+        }catch{
+            print("No data exist!")
+        }
+        
+        return array
+    }
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         self.currentLocation = locations.last!
         //        let center = CLLocationCoordinate2D(latitude: locationValue.coordinate.latitude, longitude: locationValue.coordinate.longitude)
@@ -128,21 +178,21 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         
         self.popUpPiker.tintColor = UIColor.mrDarkSlateBlueColor()
         self.popUpPiker.titleLabel?.font = UIFont.mrtextStyle24Font()
+        pickBarCancel.backgroundColor = UIColor.clearColor()
+        pickBarDone.backgroundColor = UIColor.clearColor()
+        pickBarTitle.backgroundColor = UIColor.clearColor()
+        pickBarTitle.font = UIFont.mrtextStyle28Font()
     }
     func setUpPickerView(){
-        //pickerBar = UIView(frame: CGRectMake(0, self.view.frame.height - self.pickView.frame.height - 44 , self.pickView.frame.width, 44))
-        pickerBar.frame = CGRectMake(0, self.view.frame.height - self.pickView.frame.height - 43 , self.pickView.frame.width, 44)
         
-        pickerBar.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
+        pickerBar.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
         pickView.backgroundColor = UIColor.whiteColor()
         
-        self.pickerBar.hidden = false
         
     }
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
-        pickView.hidden = true
-        self.pickerBar.hidden = true
+       userChoose = entityName[row]
+
     }
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
@@ -161,6 +211,22 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func cancelInfo(sender: AnyObject) {
+        viewDisapear()
+        
+    }
+    func viewDisapear(){
+        self.pickView.hidden = true
+        self.pickBarTitle.hidden = true
+        self.pickerBar.hidden = true
+        self.pickBarCancel.hidden = true
+        self.pickBarDone.hidden = true
+    }
+    
+    @IBAction func didChooseInfo(sender: AnyObject) {
+        
+        viewDisapear()
+    }
     func setupRevealViewController(){
         
         naviLeftBut.addTarget(self.revealViewController(), action: Selector("revealToggle:"), forControlEvents: UIControlEvents.TouchUpInside)
@@ -193,13 +259,19 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         self.lookForLabel.layer.cornerRadius = 4
         self.lookForLabel.font = UIFont.mrtextStyle22Font()
     }
+    func showPickerAgain(){
+        self.pickView.hidden = false
+        self.pickBarTitle.hidden = false
+        self.pickerBar.hidden = false
+        self.pickBarCancel.hidden = false
+        self.pickBarDone.hidden = false
+    }
     
     @IBAction func showPicker(sender: AnyObject) {
         
         //self.view.addSubview(pickView)
-        self.view.addSubview(pickerBar)
         setUpPickerView()
-        pickView.hidden = false
+        showPickerAgain()
         
         
     }
@@ -255,7 +327,7 @@ extension MapInfoViewController: MKMapViewDelegate {
             return clusterView
             
         } else {
-            let countLabel:UIView?
+            //let countLabel:UIView?
             var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier("pin")
             
             
@@ -263,25 +335,16 @@ extension MapInfoViewController: MKMapViewDelegate {
             if pinView == nil {
                 
                 pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "pin")
-                let image = UIImage(named: "icon-station.png")
-                
+  
                 pinView!.canShowCallout = true
-                pinView?.frame = CGRectMake(0,0,(image?.size.width)!,(image?.size.height)!)
+                pinView?.bounds = CGRectMake(0,0,(image?.size.width)!,(image?.size.height)!)
                 
                 pinView!.layer.cornerRadius = pinView!.bounds.height / 2
-                print("bound: \(pinView?.bounds)")
-                print("corner: \(pinView?.layer.cornerRadius)")
-//                pinView!.layer.masksToBounds = true
+
                 pinView!.backgroundColor = UIColor.whiteColor()
                 
                 pinView?.image = image
-                //pinView?.addSubview(img.view)
-                //countLabel = UIView(frame: pinView!.bounds)
-                
-                
-                
-                //pinView?.addSubview(countLabel!)
-                //pinView?.insertSubview(countLabel!, atIndex: 0)
+               
                 
                 
             }

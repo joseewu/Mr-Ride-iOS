@@ -14,6 +14,7 @@ import CoreLocation
 import HealthKit
 import CoreData
 import SWRevealViewController
+import Soundcloud
 
 
 class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDelegate{
@@ -39,6 +40,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     
     @IBOutlet weak var BG1: UIView!
     
+    @IBOutlet weak var soundCloudbut: UIButton!
     
     
     private let gradientLayer1 = CAGradientLayer()
@@ -64,6 +66,8 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     private var startTime: NSDate?
     private var userDefaltkm = NSUserDefaults.standardUserDefaults()
     private var summationDistance:Double?
+    private var user:User?
+    private var imgURL:NSURL?
     var intervalBeforPause: NSTimeInterval = 0
     var store:NSTimeInterval = 0
     
@@ -90,7 +94,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
             //userDefaltkm.setDouble(0.0, forKey: "Times")
             //userDefaltkm.synchronize()
         }
-        print(summationDistance)
+        //print(summationDistance)
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.activityType = .Fitness
@@ -114,7 +118,10 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         
     }
     
-    
+    func changeSCPic(ur:NSURL){
+        
+       
+    }
     func setUpDate(date:NSDate)->(year:String,Month:String, day:String){
         
         let Today = date.description as NSString
@@ -206,8 +213,47 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         finishBut.tintColor = UIColor.whiteColor()
         startPaulseBut.layer.backgroundColor = UIColor.redColor().CGColor
         self.startPaulseBut.layer.cornerRadius = 30;
+        soundCloudbut.layer.cornerRadius = 40
+        soundCloudbut.backgroundColor = UIColor.mrRobinsEggBlueColor()
+        
+        soundCloudbut.setImage(UIImage(named: "soundCloudlogo"), forState: .Normal)
         
         
+    }
+    
+    @IBAction func SClogIn(sender: UIButton) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        dispatch_async(dispatch_get_main_queue()) {
+            Session.login(self, completion: { [weak self] result -> Void in
+                
+                if (result.response.isSuccessful){
+                    
+                    
+                    self!.getUser()
+                }
+                
+                
+                })
+            appDelegate.didLogInSoundCloud()
+            
+        }
+        
+        
+    }
+    func getUser(){
+        
+        Soundcloud.session?.me({ [weak self] result  in
+            self!.user = result.response.result
+            if let user = result.response.result {
+                self!.imgURL = user.avatarURL.cropURL
+            }
+            
+        })
+        
+        let imag = UIImageView(image: UIImage(data: NSData(contentsOfURL: self.imgURL!)!))
+        imag.frame = soundCloudbut.frame
+        imag.contentMode = .ScaleAspectFill
+
     }
     
     func setUpGardientLayer(){
