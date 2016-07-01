@@ -1,6 +1,6 @@
 
 ## Mr.Ride
->  Mr.Ride is a finess app for riding bicycle. 
+>  Mr.Ride is a fitness app for riding bicycle. 
 
 # Features
 > Mr.Ride provides a nice user interface for everyone to record the riding path, distance, speed ...Also you can log in your FB and soundcloud to share your happy moment and listen music while riding. Hope you enjoy it!! :stuck_out_tongue_winking_eye:
