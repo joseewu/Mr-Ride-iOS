@@ -16,7 +16,7 @@ private let managedContext = (UIApplication.sharedApplication().delegate as! App
 
 extension MapInfoViewController : FBClusteringManagerDelegate {
     
-    public func cellSizeFactorForCoordinator(coordinator:FBClusteringManager) -> CGFloat{
+    internal func cellSizeFactorForCoordinator(coordinator:FBClusteringManager) -> CGFloat{
         return 1.0
     }
     
@@ -36,20 +36,14 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
     @IBOutlet weak var popUpPiker: UIButton!
     @IBOutlet weak var lookForLabel: UILabel!
     @IBOutlet weak var pickView: UIPickerView!
+    private var reusedID = "pins"
     private let locationMannager = CLLocationManager()
     private let chooseName = ["Ubike Station","Toilet"]
     private let entityName = ["Ubikes","Toilets"]
     var image = UIImage(named: "icon-station.png")
-    private var array:[MKAnnotation] = []
-    private var userChoose:String?{
-        didSet{
-            mapView.removeAnnotations(array)
-            
-            image = UIImage(named: "icon-toilet")
-            quering(userChoose!)
-            userChoose?.removeAll()
-        }
-    }
+    private var toiletlocation:[MKAnnotation] = []
+    private var Ubikelocation:[MKAnnotation] = []
+    
     private var currentLocation:CLLocation?{
         didSet{
             setupMap()
@@ -73,9 +67,9 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         setupRevealViewController()
         setUpBut()
         viewDisapear()
-        self.array = queringDataUbike(entity: "Ubikes")
-        clusteringManager.addAnnotations(array)
-        
+        self.Ubikelocation = queringDataUbike(entity: "Ubikes")
+        self.toiletlocation = queringDataToilets(entity: "Toilets")
+        clusteringManager.addAnnotations(self.Ubikelocation)
         
     }
     func fetchLocation(){
@@ -86,12 +80,22 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         
     }
     func quering(en:String){
+        
+        
+
         if en == "Toilets"{
-            self.array = queringDataToilets(entity: "Toilets")
+            
+            image = UIImage(named: "icon-toilet.png")
+            reusedID = "toi"
+            clusteringManager.setAnnotations(self.toiletlocation)
+            
         }else{
-            self.array = queringDataUbike(entity: "Ubikes")
+            
+            image = UIImage(named: "icon-station.png")
+            reusedID = "pins"
+            clusteringManager.setAnnotations(self.Ubikelocation)
         }
-        clusteringManager.addAnnotations(array)
+        
 
     }
     
@@ -101,12 +105,12 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         var array:[FBAnnotation] = []
         
         
-        var request = NSFetchRequest(entityName: en)
+        let request = NSFetchRequest(entityName: en)
         request.returnsObjectsAsFaults = false
         
         do{
             
-            var results:NSArray = try managedContext.executeFetchRequest(request)
+            let results:NSArray = try managedContext.executeFetchRequest(request)
             
             if (results.count > 0){
                 
@@ -131,9 +135,7 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
     func queringDataUbike(entity en: String) -> [FBAnnotation]{
         
         var array:[FBAnnotation] = []
-        
-        
-        var request = NSFetchRequest(entityName: en)
+        let request = NSFetchRequest(entityName: en)
         request.returnsObjectsAsFaults = false
         
         do{
@@ -173,6 +175,8 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         self.mapView.setRegion(region, animated: true)
     }
     func setUpBut(){
+        
+        self.popUpPiker.titleLabel?.text = chooseName[1]
         self.popUpPiker.backgroundColor = UIColor.whiteColor()
         self.popUpPiker.layer.cornerRadius = 4
         
@@ -191,7 +195,13 @@ class MapInfoViewController: UIViewController,UIPickerViewDelegate,UIPickerViewD
         
     }
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-       userChoose = entityName[row]
+       
+        let allAnnotations = self.mapView.annotations
+        self.mapView.removeAnnotations(allAnnotations)
+        
+        quering(entityName[row])
+        
+        self.popUpPiker.titleLabel?.text = chooseName[row]
 
     }
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
@@ -306,7 +316,14 @@ extension MapInfoViewController: MKMapViewDelegate {
         })
         
     }
-    
+
+    func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
+        view.backgroundColor = UIColor.whiteColor()
+        
+    }
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        view.backgroundColor = UIColor.mrLightblueColor().colorWithAlphaComponent(0.7)
+    }
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         
         if annotation is MKUserLocation {
@@ -334,7 +351,7 @@ extension MapInfoViewController: MKMapViewDelegate {
             //var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId)
             if pinView == nil {
                 
-                pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+                pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: reusedID)
   
                 pinView!.canShowCallout = true
                 pinView?.bounds = CGRectMake(0,0,(image?.size.width)!,(image?.size.height)!)

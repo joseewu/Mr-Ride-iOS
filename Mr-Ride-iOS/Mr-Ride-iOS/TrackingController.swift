@@ -15,9 +15,10 @@ import HealthKit
 import CoreData
 import SWRevealViewController
 import Soundcloud
+import AVFoundation
 
 
-class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDelegate{
+class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDelegate,AVAudioPlayerDelegate{
     
     
     @IBOutlet weak var finishBut: UIButton!
@@ -66,7 +67,21 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     private var startTime: NSDate?
     private var userDefaltkm = NSUserDefaults.standardUserDefaults()
     private var summationDistance:Double?
-    private var user:User?
+    private var trackplay:AVPlayer!
+    //private var player:AVAudioPlayer!
+    private var user:User?{
+        didSet{
+            //getUserTracks()
+            getUserFavorites()
+        }
+    }
+    
+    private var userTracks:[Track]?{
+        didSet{
+            
+            streamPlayBack(userTracks)
+        }
+    }
     private var imgURL:NSURL?
     var intervalBeforPause: NSTimeInterval = 0
     var store:NSTimeInterval = 0
@@ -114,13 +129,11 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+
+    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+        self.userTracks?.removeFirst()
         
-    }
-    
-    func changeSCPic(ur:NSURL){
         
-       
     }
     func setUpDate(date:NSDate)->(year:String,Month:String, day:String){
         
@@ -234,7 +247,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
                 
                 
                 })
-            appDelegate.didLogInSoundCloud()
+            //appDelegate.didLogInSoundCloud()
             
         }
         
@@ -243,17 +256,73 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     func getUser(){
         
         Soundcloud.session?.me({ [weak self] result  in
+            
             self!.user = result.response.result
             if let user = result.response.result {
-                self!.imgURL = user.avatarURL.cropURL
+                print("getting user")
+                
+                
+                let imag = UIImageView(image: UIImage(data: NSData(contentsOfURL: user.avatarURL.cropURL!)!))
+                imag.frame = self!.soundCloudbut.frame
+                imag.layer.masksToBounds = true
+                imag.layer.cornerRadius = self!.soundCloudbut.frame.height / 2
+                imag.contentMode = .ScaleAspectFit
+                self?.view.addSubview(imag)
+                
+                
             }
             
-        })
+            })
         
-        let imag = UIImageView(image: UIImage(data: NSData(contentsOfURL: self.imgURL!)!))
-        imag.frame = soundCloudbut.frame
-        imag.contentMode = .ScaleAspectFill
+        
+    }
+    func getUserTracks(){
+        
+        user?.tracks({[weak self] respondsTrack in
+            
+            if respondsTrack.response.isSuccessful{
+                self?.userTracks = respondsTrack.response.result
+            }
+            
+            })
+        
+    }
+    
+    func getUserFavorites(){
+        
+        user?.favorites({[weak self] results in
+            if results.response.isSuccessful{
+                self?.userTracks = results.response.result
+            }
+        })
+//        user?.tracks({[weak self] respondsTrack in
+//            
+//            if respondsTrack.response.isSuccessful{
+//                self?.userTracks = respondsTrack.response.result
+//            }
+//            
+//            })
+        
+    }
+    
+    func streamPlayBack(tracklists:[Track]?){
+        
+        //let trackCount = tracklists?.count
+        
+        let track = tracklists?[4].streamURL
+        
+//        player = try? AVAudioPlayer(contentsOfURL: track!)
+//        player.play()
+        trackplay = AVPlayer(URL: track!)
 
+        trackplay.rate = 1.0
+        trackplay.volume = 1.0
+        //trackplay.prepareToPlay()
+        trackplay.play()
+        //trackplay.status
+        //trackplay
+        
+        
     }
     
     func setUpGardientLayer(){
@@ -382,6 +451,13 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     
     
     func saveWhenFinish(){
+        
+        trackplay.pause()
+        
+        if (self.long.isEmpty || self.long.isEmpty) {
+            self.long.insert([0], atIndex: 0)
+            self.lat.insert([0], atIndex: 0)
+        }
         
         let records = NSEntityDescription.insertNewObjectForEntityForName("RunRecords", inManagedObjectContext: managedContext) as! RunRecords
         let saveDate = self.navigationController?.navigationBar.topItem?.title
