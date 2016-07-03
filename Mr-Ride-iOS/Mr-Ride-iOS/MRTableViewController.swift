@@ -10,7 +10,7 @@ import UIKit
 import SWRevealViewController
 
 class MRTableViewController: UITableViewController {
-    let dataArray = ["","Home","History"]
+    let dataArray = ["","Home","History","Map"]
     
     
     override func viewDidLoad() {
@@ -36,7 +36,7 @@ class MRTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 3
+        return 4
     }
     
     
@@ -51,6 +51,7 @@ class MRTableViewController: UITableViewController {
         if indexPath.row == 0 {
             cell.decaration.backgroundColor = UIColor.clearColor()
         }else{
+            
             cell.decaration.backgroundColor = UIColor.mrDarkSlateBlueColor()
             cell.decaration.layer.cornerRadius = cell.decaration.frame.size.height/2
             cell.decaration.clipsToBounds = true
@@ -71,12 +72,15 @@ class MRTableViewController: UITableViewController {
             let vc = self.storyboard?.instantiateViewControllerWithIdentifier("HomeNavi") as! UINavigationController
             let  segueToHome = SWRevealViewControllerSeguePushController.init(identifier: SWSegueRearIdentifier, source: self, destination: vc)
             segueToHome.perform()
-            print(indexPath.row)
         case 2:
             let vc = self.storyboard?.instantiateViewControllerWithIdentifier("HistoryNavi") as! UINavigationController
             let  segueToHistory = SWRevealViewControllerSeguePushController.init(identifier: SWSegueRearIdentifier, source: self, destination: vc)
             segueToHistory.perform()
-            print(indexPath.row)
+            
+        case 3:
+            let vc = self.storyboard?.instantiateViewControllerWithIdentifier("mapInfoNavi") as! UINavigationController
+            let  segueToMapInfo = SWRevealViewControllerSeguePushController.init(identifier: SWSegueRearIdentifier, source: self, destination: vc)
+            segueToMapInfo.perform()
         default: return
         }
     }

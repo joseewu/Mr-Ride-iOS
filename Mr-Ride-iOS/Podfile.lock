@@ -1,18 +1,81 @@
 PODS:
+  - 1PasswordExtension (1.8.2)
+  - Alamofire (3.2.1)
+  - Amplitude-iOS (3.7.0)
+  - Bolts (1.7.0):
+    - Bolts/AppLinks (= 1.7.0)
+    - Bolts/Tasks (= 1.7.0)
+  - Bolts/AppLinks (1.7.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.7.0)
   - Charts (2.2.2):
     - Charts/Core (= 2.2.2)
   - Charts/Core (2.2.2)
+  - FBAnnotationClusteringSwift (1.0.1)
+  - FBSDKCoreKit (4.13.1):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.13.1):
+    - FBSDKCoreKit
+  - FBSDKShareKit (4.13.1):
+    - FBSDKCoreKit
+  - FirebaseAnalytics (3.2.0):
+    - FirebaseInstanceID (~> 1.0)
+    - GoogleInterchangeUtilities (~> 1.2)
+    - GoogleSymbolUtilities (~> 1.1)
+    - GoogleUtilities (~> 1.3)
+  - FirebaseInstanceID (1.0.6)
+  - Google/Analytics (3.0.3):
+    - Google/Core
+    - GoogleAnalytics (~> 3.12)
+  - Google/Core (3.0.3):
+    - FirebaseAnalytics (~> 3.2)
+  - GoogleAnalytics (3.14.0)
+  - GoogleInterchangeUtilities (1.2.1):
+    - GoogleSymbolUtilities (~> 1.0)
   - GoogleMaps (1.13.2)
+  - GoogleSymbolUtilities (1.1.1)
+  - GoogleUtilities (1.3.1):
+    - GoogleSymbolUtilities (~> 1.0)
+  - Soundcloud (0.8.1):
+    - 1PasswordExtension (~> 1.5)
+    - UICKeyChainStore (~> 2.0.6)
   - SWRevealViewController (2.3.0)
+  - UICKeyChainStore (2.0.7)
 
 DEPENDENCIES:
+  - Alamofire (= 3.2.1)
+  - Amplitude-iOS (~> 3.7.0)
+  - Bolts
   - Charts (= 2.2.2)
+  - FBAnnotationClusteringSwift
+  - FBSDKCoreKit
+  - FBSDKLoginKit
+  - FBSDKShareKit
+  - Google/Analytics
   - GoogleMaps
+  - Soundcloud
   - SWRevealViewController
 
 SPEC CHECKSUMS:
+  1PasswordExtension: 303f2b7bbf6dc19ede3090bd6b5987530648d687
+  Alamofire: f11d8624a05f5d39e0c99309b3e600a3ba64298a
+  Amplitude-iOS: 8bc8b9dc9c1898dbe5da541e21e8941ec085644f
+  Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
   Charts: e32b718fa716bdb7693b9e419d6d4a39a3f7992e
+  FBAnnotationClusteringSwift: a1f4c07f5472b13acd69de04c61e68e2d7daaad3
+  FBSDKCoreKit: 2807fe0da2ddb49a1469da6d6ff597f99912980f
+  FBSDKLoginKit: 6d350cb6a22d6956e9d078885de6ee8a0ebc51b4
+  FBSDKShareKit: c9438df7573b33780ac8c3451201c5ebb260ffca
+  FirebaseAnalytics: 6f75b04e6bfb8e0b6e9ef298e04c24eea3b13863
+  FirebaseInstanceID: d014d574053a2fe84478f12f7bae96979e7051bb
+  Google: 813c467362eabc11385f5a5cc9ad0cb651a58f4e
+  GoogleAnalytics: 9be1afdb8deeac4bb5f13ca7f7d3b9db2a1f43dc
+  GoogleInterchangeUtilities: def8415a862effc67d549d5b5b0b9c7a2f97d4de
   GoogleMaps: b20a103ff307f58392e603cf142e59d7e30374c1
+  GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
+  GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
+  Soundcloud: 372ac38762a29949302bd52f5cbd2839af2aa930
   SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
+  UICKeyChainStore: 696cd35083f7c8fb5e201d909b7e6aea6b478575
 
 COCOAPODS: 0.39.0

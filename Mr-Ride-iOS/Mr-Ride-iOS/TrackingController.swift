@@ -14,9 +14,11 @@ import CoreLocation
 import HealthKit
 import CoreData
 import SWRevealViewController
+import Soundcloud
+import AVFoundation
 
 
-class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDelegate{
+class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDelegate,AVAudioPlayerDelegate{
     
     
     @IBOutlet weak var finishBut: UIButton!
@@ -36,6 +38,10 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     @IBOutlet weak var showDistance: UILabel!
     @IBOutlet weak var showSpeed: UILabel!
     @IBOutlet weak var showCalories: UILabel!
+    
+    @IBOutlet weak var BG1: UIView!
+    
+    @IBOutlet weak var soundCloudbut: UIButton!
     
     
     private let gradientLayer1 = CAGradientLayer()
@@ -57,6 +63,33 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     private var latTempArray = [Double]()
     private var lat = [[Double]]()
     private var locationManager = CLLocationManager()
+    private var sortingDate:String = ""
+    private var startTime: NSDate?
+    private var userDefaltkm = NSUserDefaults.standardUserDefaults()
+    private var summationDistance:Double?
+    private var trackplay:AVPlayer!
+    //private var player:AVAudioPlayer!
+    private var user:User?{
+        didSet{
+            //getUserTracks()
+            getUserFavorites()
+        }
+    }
+    
+    private var userTracks:[Track]?{
+        didSet{
+            
+            streamPlayBack(userTracks)
+        }
+    }
+    private var imgURL:NSURL?
+    var intervalBeforPause: NSTimeInterval = 0
+    var store:NSTimeInterval = 0
+    
+    
+    
+    
+    
     //private let managedContext = AppDelegate().managedObjectContext
     private let managedContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
@@ -65,6 +98,18 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if (userDefaltkm.objectForKey("TotalDistance")  == nil){
+            summationDistance = 0.0
+            self.count = 0
+        }else{
+            //print("did clear!")
+            summationDistance = userDefaltkm.doubleForKey("TotalDistance")
+            self.count = userDefaltkm.integerForKey("Times")
+            //userDefaltkm.setDouble(0.0, forKey: "TotalDistance")
+            //userDefaltkm.setDouble(0.0, forKey: "Times")
+            //userDefaltkm.synchronize()
+        }
+        //print(summationDistance)
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.activityType = .Fitness
@@ -75,7 +120,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         setUpLabels()
         setUp()
         showMap()
-        cleanUpCoreData()
+        //cleanUpCoreData()
         
         
         
@@ -84,23 +129,33 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+
+    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+        self.userTracks?.removeFirst()
+        
         
     }
-    
-    
     func setUpDate(date:NSDate)->(year:String,Month:String, day:String){
         
-        var Today = date.description as NSString
-        var year = Today.substringWithRange(NSRange(location: 0, length: 4))
-        var month = Today.substringWithRange(NSRange(location: 5, length: 2))
-        var day = Today.substringWithRange(NSRange(location: 8, length: 2))
+        let Today = date.description as NSString
+        let year = Today.substringWithRange(NSRange(location: 0, length: 4))
+        let month = Today.substringWithRange(NSRange(location: 5, length: 2))
+        let day = Today.substringWithRange(NSRange(location: 8, length: 2))
         return (year,month,day)
         
     }
     func setUp(){
+        timerOutpu.text = "00:00:00:00"
         timerOutpu.backgroundColor = UIColor.clearColor()
         timerOutpu.textColor = UIColor.whiteColor()
+        timerOutpu.font = UIFont.mrRobot()
+        timerOutpu.textAlignment = NSTextAlignment.Center
+        
+        BG1.backgroundColor = UIColor.clearColor()
+        BG1.layer.cornerRadius = BG1.frame.width/2
+        BG1.layer.borderWidth = 5
+        BG1.layer.borderColor = UIColor.whiteColor().CGColor
+        
     }
     func setUpLabels(){
         
@@ -129,6 +184,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         showCalories.font = UIFont.mrTextStyle15Font()
         showSpeed.font = UIFont.mrTextStyle15Font()
         showDistance.font = UIFont.mrTextStyle15Font()
+        
     }
     
     func showMap(){
@@ -169,6 +225,102 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         cancelBut.tintColor = UIColor.whiteColor()
         finishBut.tintColor = UIColor.whiteColor()
         startPaulseBut.layer.backgroundColor = UIColor.redColor().CGColor
+        self.startPaulseBut.layer.cornerRadius = 30;
+        soundCloudbut.layer.cornerRadius = 40
+        soundCloudbut.backgroundColor = UIColor.mrRobinsEggBlueColor()
+        
+        soundCloudbut.setImage(UIImage(named: "soundCloudlogo"), forState: .Normal)
+        
+        
+    }
+    
+    @IBAction func SClogIn(sender: UIButton) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        dispatch_async(dispatch_get_main_queue()) {
+            Session.login(self, completion: { [weak self] result -> Void in
+                
+                if (result.response.isSuccessful){
+                    
+                    
+                    self!.getUser()
+                }
+                
+                
+                })
+            //appDelegate.didLogInSoundCloud()
+            
+        }
+        
+        
+    }
+    func getUser(){
+        
+        Soundcloud.session?.me({ [weak self] result  in
+            
+            self!.user = result.response.result
+            if let user = result.response.result {
+                print("getting user")
+                
+                
+                let imag = UIImageView(image: UIImage(data: NSData(contentsOfURL: user.avatarURL.cropURL!)!))
+                imag.frame = self!.soundCloudbut.frame
+                imag.layer.masksToBounds = true
+                imag.layer.cornerRadius = self!.soundCloudbut.frame.height / 2
+                imag.contentMode = .ScaleAspectFit
+                self?.view.addSubview(imag)
+                
+                
+            }
+            
+            })
+        
+        
+    }
+    func getUserTracks(){
+        
+        user?.tracks({[weak self] respondsTrack in
+            
+            if respondsTrack.response.isSuccessful{
+                self?.userTracks = respondsTrack.response.result
+            }
+            
+            })
+        
+    }
+    
+    func getUserFavorites(){
+        
+        user?.favorites({[weak self] results in
+            if results.response.isSuccessful{
+                self?.userTracks = results.response.result
+            }
+        })
+//        user?.tracks({[weak self] respondsTrack in
+//            
+//            if respondsTrack.response.isSuccessful{
+//                self?.userTracks = respondsTrack.response.result
+//            }
+//            
+//            })
+        
+    }
+    
+    func streamPlayBack(tracklists:[Track]?){
+        
+        //let trackCount = tracklists?.count
+        
+        let track = tracklists?[4].streamURL
+        
+//        player = try? AVAudioPlayer(contentsOfURL: track!)
+//        player.play()
+        trackplay = AVPlayer(URL: track!)
+
+        trackplay.rate = 1.0
+        trackplay.volume = 1.0
+        //trackplay.prepareToPlay()
+        trackplay.play()
+        //trackplay.status
+        //trackplay
         
         
     }
@@ -187,36 +339,63 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     
     func setUpNavigationBar(){
         
-        var today = setUpDate(date)
+        let today = setUpDate(date)
         self.navigationController?.navigationBar.barTintColor = UIColor.mrLightblueColor()
         self.navigationController?.navigationBar.topItem?.title = today.year + " / " + today.Month + " / " + today.day
+        self.sortingDate = today.Month + "/" + today.day
         self.navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName:UIFont.mrTextStyle17Font(),NSForegroundColorAttributeName:UIColor.whiteColor()]
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         
     }
     
-    func showTime(){
+    
+    func calculateCal(time:UInt8)->Double{
         
-        seconds += 1
-        
-        //please implement the method to show the format of time
-        timerOutpu.text = "\(seconds)"
-        self.speed = (distance / Double(seconds)) * 3.6;
-        cal = calculateCal(self.speed)
-        
-    }
-    func calculateCal(Cv:Double)->Double{
-        
-        
-        var constance = Cv * 0.497
-        var calEstimated = (((3.509)*constance + (0.2581) * pow(constance,3)) / (69.78)) / (0.25)
+        let carlCal = CalorieCalculator()
+        let calEstimated = carlCal.kiloCalorieBurned(.Bike, speed: self.speed, weight: 50.0, time: Double(time))
         return calEstimated
     }
+    
+    
+    
+    
+    func updateTime(){
+        
+        
+        
+        
+        var countingTime:NSTimeInterval = -self.startTime!.timeIntervalSinceNow + self.intervalBeforPause
+        store = countingTime
+        let hour = UInt8(countingTime / 3600.0)
+        countingTime -= (NSTimeInterval(hour) * 3600.0)
+        let minutes = UInt8(countingTime / 60.0)
+        countingTime -= (NSTimeInterval(minutes) * 60)
+        let sec = UInt8(NSTimeInterval(countingTime))
+        countingTime -= NSTimeInterval(sec)
+        let msecond  = UInt8(countingTime * 100.0)
+        let strHour = String(format: "%02d", hour)
+        let strMinus = String(format: "%02d", minutes)
+        let strSec = String(format: "%02d", sec)
+        let strMsec = String(format: "%02d", msecond)
+        
+        timerOutpu.text = strHour + ":" + strMinus + ":" + strSec + ":" + strMsec
+        
+        self.speed = (distance / countingTime) * 3.6;
+        self.cal = calculateCal(sec)
+        
+        
+    }
     func startCountingTime(){
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("showTime"), userInfo: nil, repeats: true)
+        
+        self.startTime = NSDate()
+        timer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
+        
     }
     func stopCountingTime(){
+        self.intervalBeforPause = store
+        self.seconds += Int(self.intervalBeforPause)
+        store = 0
         timer.invalidate()
     }
     
@@ -265,9 +444,6 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
                 
             }
             
-            // print("current: \(self.currentLocation)")
-            //print("keepTracking: \(self.locationsInRiding)")
-            
         }
         updatingRidingInfo()
     }
@@ -276,22 +452,37 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     
     func saveWhenFinish(){
         
+        trackplay.pause()
+        
+        if (self.long.isEmpty || self.long.isEmpty) {
+            self.long.insert([0], atIndex: 0)
+            self.lat.insert([0], atIndex: 0)
+        }
+        
         let records = NSEntityDescription.insertNewObjectForEntityForName("RunRecords", inManagedObjectContext: managedContext) as! RunRecords
         let saveDate = self.navigationController?.navigationBar.topItem?.title
+        
         records.setValue("\(saveDate!)", forKey: "date")
-        records.setValue(seconds, forKey: "time")
-        records.setValue(distance, forKey: "distance")
+        records.setValue(self.seconds, forKey: "time")
+        records.setValue(self.distance, forKey: "distance")
         records.setValue(self.lat, forKey: "lat")
         records.setValue(self.long, forKey: "long")
         records.setValue(self.cal, forKey: "cal")
-        
+        records.setValue(self.sortingDate, forKey: "sortingDate")
+        records.setValue(self.timerOutpu.text, forKey: "timeString")
         do {
             try self.managedContext.save()
         }catch{
             
             fatalError("Failure to save context: \(error)")
         }
+        self.count += 1
         
+        self.summationDistance! += self.distance
+        
+        userDefaltkm.setDouble(self.summationDistance!, forKey: "TotalDistance")
+        userDefaltkm.setInteger(self.count, forKey: "Times")
+        userDefaltkm.synchronize()
         
         
     }
@@ -337,6 +528,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         polyline.strokeColor = UIColor.mrBubblegumColor()
         polyline.strokeWidth = 9.0
         polyline.map = mapView
+        
     }
     
     func updatingRidingInfo(){
@@ -357,22 +549,31 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
             UIView.animateWithDuration(0.6 ,
                 animations: {
                     
-                    self.startPaulseBut.transform = CGAffineTransformMakeScale(2, 2)
-                    
-                    //                    self.startPaulseBut.layer.cornerRadius = self.startPaulseBut.frame.size.width/2;
-                    self.startPaulseBut.layer.masksToBounds = true;
-                    self.startPaulseBut.clipsToBounds = true;
-                    //                    let animation = CABasicAnimation(keyPath: "cornerRadius")
-                    //
-                    //                    animation.fromValue = 4
-                    //                    animation.toValue = 30;
-                    //                    animation.duration = 0.6
-                    //                    self.startPaulseBut.layer.addAnimation(animation, forKey: "cornerRadius")
+                    self.startPaulseBut.transform = CGAffineTransformMakeScale(0.5, 0.5)
+                    UIView.animateWithDuration(0.1 ,
+                        animations: {
+                            
+                            //                            self.startPaulseBut.layer.cornerRadius = 10;
+                            //                            self.startPaulseBut.layer.masksToBounds = true;
+                            //                            self.startPaulseBut.clipsToBounds = true;
+                            
+                        },
+                        completion: { finish in
+                            UIView.animateWithDuration(0.6){
+                                self.startPaulseBut.layer.cornerRadius = 10;
+                                self.startPaulseBut.layer.masksToBounds = true;
+                                self.startPaulseBut.clipsToBounds = true;
+                            }
+                    })
+                    //                    self.startPaulseBut.layer.cornerRadius = 10;
+                    //                    self.startPaulseBut.layer.masksToBounds = true;
+                    //                    self.startPaulseBut.clipsToBounds = true;
                     
                     
                 },
                 completion: { finish in
                     UIView.animateWithDuration(0.6){
+                        
                         
                     }
             })
@@ -389,14 +590,33 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
             self.longTempArray.removeAll()
             self.latTempArray.removeAll()
             
-            UIView.animateWithDuration(0.6 ,
+            UIView.animateWithDuration(0.7 ,
                 animations: {
-                    self.startPaulseBut.transform = CGAffineTransformIdentity
+                    
+                    self.startPaulseBut.transform = CGAffineTransformMakeScale(1, 1)
+                    
+                    UIView.animateWithDuration(3 ,
+                        animations: {
+                            self.startPaulseBut.layer.cornerRadius = 30;
+                            self.startPaulseBut.layer.masksToBounds = true;
+                            self.startPaulseBut.clipsToBounds = true;
+                            
+                            
+                        },
+                        completion: { finish in
+                            UIView.animateWithDuration(3){
+                                
+                            }
+                    })
+                    
+                    
                     
                 },
                 completion: { finish in
-                    UIView.animateWithDuration(0.6){
-                        
+                    UIView.animateWithDuration(4){
+                        //                        self.startPaulseBut.layer.cornerRadius = 30;
+                        //                        self.startPaulseBut.layer.masksToBounds = true;
+                        //                        self.startPaulseBut.clipsToBounds = true;
                     }
             })
             

@@ -2,7 +2,7 @@
 //  RunRecords.swift
 //  Mr-Ride-iOS
 //
-//  Created by josee on 6/12/16.
+//  Created by josee on 6/24/16.
 //  Copyright © 2016 com.josee. All rights reserved.
 //
 

@@ -15,8 +15,30 @@
 		1865753A1D0D44FE00B6DF02 /* TrackingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186575391D0D44FE00B6DF02 /* TrackingController.swift */; };
 		1865753C1D0D452600B6DF02 /* HistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1865753B1D0D452600B6DF02 /* HistoryController.swift */; };
 		1865753E1D0D455D00B6DF02 /* MenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1865753D1D0D455D00B6DF02 /* MenuTableViewCell.swift */; };
-		186575411D0D49A800B6DF02 /* RunRecords+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1865753F1D0D49A800B6DF02 /* RunRecords+CoreDataProperties.swift */; };
-		186575421D0D49A800B6DF02 /* RunRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186575401D0D49A800B6DF02 /* RunRecords.swift */; };
+		186F635D1D20EA9B005229D1 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186F635B1D20EA9B005229D1 /* Fabric.framework */; };
+		186F635E1D20EA9B005229D1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186F635C1D20EA9B005229D1 /* Crashlytics.framework */; };
+		189380BC1D1CC2CB009BBFE3 /* RunRecords+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189380BA1D1CC2CB009BBFE3 /* RunRecords+CoreDataProperties.swift */; };
+		189380BD1D1CC2CB009BBFE3 /* RunRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189380BB1D1CC2CB009BBFE3 /* RunRecords.swift */; };
+		189380BF1D1CC321009BBFE3 /* CaloriesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189380BE1D1CC321009BBFE3 /* CaloriesModel.swift */; };
+		189380C11D1CC3D1009BBFE3 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189380C01D1CC3D1009BBFE3 /* LogInViewController.swift */; };
+		189380C51D1CC5EE009BBFE3 /* MapInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189380C41D1CC5EE009BBFE3 /* MapInfoViewController.swift */; };
+		189380C71D1CC61F009BBFE3 /* DataTaipei.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189380C61D1CC61F009BBFE3 /* DataTaipei.swift */; };
+		189380D41D1CDF38009BBFE3 /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189380D31D1CDF38009BBFE3 /* HistoryTableViewCell.swift */; };
+		189380D51D1CF4C2009BBFE3 /* RobotoMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380C81D1CCA89009BBFE3 /* RobotoMono-Bold.ttf */; };
+		189380D61D1CF4C2009BBFE3 /* RobotoMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380C91D1CCA89009BBFE3 /* RobotoMono-BoldItalic.ttf */; };
+		189380D71D1CF4C2009BBFE3 /* RobotoMono-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380CA1D1CCA89009BBFE3 /* RobotoMono-Italic.ttf */; };
+		189380D81D1CF4C2009BBFE3 /* RobotoMono-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380CB1D1CCA89009BBFE3 /* RobotoMono-Light.ttf */; };
+		189380D91D1CF4C2009BBFE3 /* RobotoMono-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380CC1D1CCA89009BBFE3 /* RobotoMono-LightItalic.ttf */; };
+		189380DA1D1CF4C2009BBFE3 /* RobotoMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380CD1D1CCA89009BBFE3 /* RobotoMono-Medium.ttf */; };
+		189380DB1D1CF4C2009BBFE3 /* RobotoMono-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380CE1D1CCA89009BBFE3 /* RobotoMono-MediumItalic.ttf */; };
+		189380DC1D1CF4C2009BBFE3 /* RobotoMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380CF1D1CCA89009BBFE3 /* RobotoMono-Regular.ttf */; };
+		189380DD1D1CF4C2009BBFE3 /* RobotoMono-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380D01D1CCA89009BBFE3 /* RobotoMono-Thin.ttf */; };
+		189380DE1D1CF4C2009BBFE3 /* RobotoMono-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 189380D11D1CCA89009BBFE3 /* RobotoMono-ThinItalic.ttf */; };
+		18AA61191D220858007AA131 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18AA61181D220858007AA131 /* GoogleService-Info.plist */; };
+		18AA611E1D224FD8007AA131 /* Toilets+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18AA611A1D224FD8007AA131 /* Toilets+CoreDataProperties.swift */; };
+		18AA611F1D224FD8007AA131 /* Toilets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18AA611B1D224FD8007AA131 /* Toilets.swift */; };
+		18AA61201D224FD8007AA131 /* Ubikes+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18AA611C1D224FD8007AA131 /* Ubikes+CoreDataProperties.swift */; };
+		18AA61211D224FD8007AA131 /* Ubikes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18AA611D1D224FD8007AA131 /* Ubikes.swift */; };
 		18D2C2CB1D0D3DFF00F85639 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D2C2CA1D0D3DFF00F85639 /* AppDelegate.swift */; };
 		18D2C2CD1D0D3DFF00F85639 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D2C2CC1D0D3DFF00F85639 /* ViewController.swift */; };
 		18D2C2D01D0D3DFF00F85639 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18D2C2CE1D0D3DFF00F85639 /* Main.storyboard */; };
@@ -35,8 +57,31 @@
 		186575391D0D44FE00B6DF02 /* TrackingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingController.swift; sourceTree = "<group>"; };
 		1865753B1D0D452600B6DF02 /* HistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryController.swift; sourceTree = "<group>"; };
 		1865753D1D0D455D00B6DF02 /* MenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewCell.swift; sourceTree = "<group>"; };
-		1865753F1D0D49A800B6DF02 /* RunRecords+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RunRecords+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		186575401D0D49A800B6DF02 /* RunRecords.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunRecords.swift; sourceTree = "<group>"; };
+		186F635B1D20EA9B005229D1 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		186F635C1D20EA9B005229D1 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		189380BA1D1CC2CB009BBFE3 /* RunRecords+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RunRecords+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		189380BB1D1CC2CB009BBFE3 /* RunRecords.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunRecords.swift; sourceTree = "<group>"; };
+		189380BE1D1CC321009BBFE3 /* CaloriesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaloriesModel.swift; sourceTree = "<group>"; };
+		189380C01D1CC3D1009BBFE3 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		189380C41D1CC5EE009BBFE3 /* MapInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapInfoViewController.swift; sourceTree = "<group>"; };
+		189380C61D1CC61F009BBFE3 /* DataTaipei.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTaipei.swift; sourceTree = "<group>"; };
+		189380C81D1CCA89009BBFE3 /* RobotoMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-Bold.ttf"; sourceTree = "<group>"; };
+		189380C91D1CCA89009BBFE3 /* RobotoMono-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-BoldItalic.ttf"; sourceTree = "<group>"; };
+		189380CA1D1CCA89009BBFE3 /* RobotoMono-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-Italic.ttf"; sourceTree = "<group>"; };
+		189380CB1D1CCA89009BBFE3 /* RobotoMono-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-Light.ttf"; sourceTree = "<group>"; };
+		189380CC1D1CCA89009BBFE3 /* RobotoMono-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-LightItalic.ttf"; sourceTree = "<group>"; };
+		189380CD1D1CCA89009BBFE3 /* RobotoMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-Medium.ttf"; sourceTree = "<group>"; };
+		189380CE1D1CCA89009BBFE3 /* RobotoMono-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-MediumItalic.ttf"; sourceTree = "<group>"; };
+		189380CF1D1CCA89009BBFE3 /* RobotoMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-Regular.ttf"; sourceTree = "<group>"; };
+		189380D01D1CCA89009BBFE3 /* RobotoMono-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-Thin.ttf"; sourceTree = "<group>"; };
+		189380D11D1CCA89009BBFE3 /* RobotoMono-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoMono-ThinItalic.ttf"; sourceTree = "<group>"; };
+		189380D31D1CDF38009BBFE3 /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
+		18AA61171D2207E9007AA131 /* BridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
+		18AA61181D220858007AA131 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		18AA611A1D224FD8007AA131 /* Toilets+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Toilets+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		18AA611B1D224FD8007AA131 /* Toilets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toilets.swift; sourceTree = "<group>"; };
+		18AA611C1D224FD8007AA131 /* Ubikes+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Ubikes+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		18AA611D1D224FD8007AA131 /* Ubikes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ubikes.swift; sourceTree = "<group>"; };
 		18D2C2C71D0D3DFF00F85639 /* Mr-Ride-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mr-Ride-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		18D2C2CA1D0D3DFF00F85639 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		18D2C2CC1D0D3DFF00F85639 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -56,15 +101,50 @@
 			buildActionMask = 2147483647;
 			files = (
 				69088BA1C58A79D9696308D7 /* Pods.framework in Frameworks */,
+				186F635E1D20EA9B005229D1 /* Crashlytics.framework in Frameworks */,
+				186F635D1D20EA9B005229D1 /* Fabric.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		189380D21D1CCA92009BBFE3 /* FontBook */ = {
+			isa = PBXGroup;
+			children = (
+				189380C81D1CCA89009BBFE3 /* RobotoMono-Bold.ttf */,
+				189380C91D1CCA89009BBFE3 /* RobotoMono-BoldItalic.ttf */,
+				189380CA1D1CCA89009BBFE3 /* RobotoMono-Italic.ttf */,
+				189380CB1D1CCA89009BBFE3 /* RobotoMono-Light.ttf */,
+				189380CC1D1CCA89009BBFE3 /* RobotoMono-LightItalic.ttf */,
+				189380CD1D1CCA89009BBFE3 /* RobotoMono-Medium.ttf */,
+				189380CE1D1CCA89009BBFE3 /* RobotoMono-MediumItalic.ttf */,
+				189380CF1D1CCA89009BBFE3 /* RobotoMono-Regular.ttf */,
+				189380D01D1CCA89009BBFE3 /* RobotoMono-Thin.ttf */,
+				189380D11D1CCA89009BBFE3 /* RobotoMono-ThinItalic.ttf */,
+			);
+			name = FontBook;
+			sourceTree = "<group>";
+		};
+		18AA61221D224FEE007AA131 /* DataSource */ = {
+			isa = PBXGroup;
+			children = (
+				18AA611A1D224FD8007AA131 /* Toilets+CoreDataProperties.swift */,
+				18AA611B1D224FD8007AA131 /* Toilets.swift */,
+				18AA611C1D224FD8007AA131 /* Ubikes+CoreDataProperties.swift */,
+				18AA611D1D224FD8007AA131 /* Ubikes.swift */,
+				18AA61171D2207E9007AA131 /* BridgingHeader.h */,
+				189380BA1D1CC2CB009BBFE3 /* RunRecords+CoreDataProperties.swift */,
+				189380BB1D1CC2CB009BBFE3 /* RunRecords.swift */,
+			);
+			name = DataSource;
+			sourceTree = "<group>";
+		};
 		18D2C2BE1D0D3DFF00F85639 = {
 			isa = PBXGroup;
 			children = (
+				186F635B1D20EA9B005229D1 /* Fabric.framework */,
+				186F635C1D20EA9B005229D1 /* Crashlytics.framework */,
 				18D2C2C91D0D3DFF00F85639 /* Mr-Ride-iOS */,
 				18D2C2C81D0D3DFF00F85639 /* Products */,
 				361467DE3ACC9280B7AB44DE /* Pods */,
@@ -83,21 +163,27 @@
 		18D2C2C91D0D3DFF00F85639 /* Mr-Ride-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				1865753F1D0D49A800B6DF02 /* RunRecords+CoreDataProperties.swift */,
-				186575401D0D49A800B6DF02 /* RunRecords.swift */,
+				18AA61221D224FEE007AA131 /* DataSource */,
 				18D2C2CA1D0D3DFF00F85639 /* AppDelegate.swift */,
 				18D2C2CC1D0D3DFF00F85639 /* ViewController.swift */,
 				186575351D0D447E00B6DF02 /* MRTableViewController.swift */,
+				189380C41D1CC5EE009BBFE3 /* MapInfoViewController.swift */,
+				189380C61D1CC61F009BBFE3 /* DataTaipei.swift */,
 				186575371D0D44D500B6DF02 /* FinishedController.swift */,
 				186575391D0D44FE00B6DF02 /* TrackingController.swift */,
+				189380D31D1CDF38009BBFE3 /* HistoryTableViewCell.swift */,
 				1865753B1D0D452600B6DF02 /* HistoryController.swift */,
 				1865753D1D0D455D00B6DF02 /* MenuTableViewCell.swift */,
 				1865752F1D0D43DA00B6DF02 /* MrRideModel.swift */,
 				186575311D0D43FF00B6DF02 /* ColorCollection.swift */,
+				189380BE1D1CC321009BBFE3 /* CaloriesModel.swift */,
 				186575331D0D440F00B6DF02 /* FontCollection.swift */,
 				18D2C2CE1D0D3DFF00F85639 /* Main.storyboard */,
+				189380C01D1CC3D1009BBFE3 /* LogInViewController.swift */,
 				18D2C2D41D0D3DFF00F85639 /* Assets.xcassets */,
+				189380D21D1CCA92009BBFE3 /* FontBook */,
 				18D2C2D61D0D3DFF00F85639 /* LaunchScreen.storyboard */,
+				18AA61181D220858007AA131 /* GoogleService-Info.plist */,
 				18D2C2D91D0D3DFF00F85639 /* Info.plist */,
 				18D2C2D11D0D3DFF00F85639 /* Mr_Ride_iOS.xcdatamodeld */,
 			);
@@ -134,6 +220,7 @@
 				18D2C2C51D0D3DFF00F85639 /* Resources */,
 				BB5EAE5CC11883133702380E /* Embed Pods Frameworks */,
 				51DAC4642741A3013CB7175F /* Copy Pods Resources */,
+				186F635A1D20EA45005229D1 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -183,15 +270,39 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				189380D51D1CF4C2009BBFE3 /* RobotoMono-Bold.ttf in Resources */,
+				189380D61D1CF4C2009BBFE3 /* RobotoMono-BoldItalic.ttf in Resources */,
+				189380D71D1CF4C2009BBFE3 /* RobotoMono-Italic.ttf in Resources */,
+				189380D81D1CF4C2009BBFE3 /* RobotoMono-Light.ttf in Resources */,
+				189380D91D1CF4C2009BBFE3 /* RobotoMono-LightItalic.ttf in Resources */,
+				189380DA1D1CF4C2009BBFE3 /* RobotoMono-Medium.ttf in Resources */,
+				189380DB1D1CF4C2009BBFE3 /* RobotoMono-MediumItalic.ttf in Resources */,
+				189380DC1D1CF4C2009BBFE3 /* RobotoMono-Regular.ttf in Resources */,
+				189380DD1D1CF4C2009BBFE3 /* RobotoMono-Thin.ttf in Resources */,
+				189380DE1D1CF4C2009BBFE3 /* RobotoMono-ThinItalic.ttf in Resources */,
 				18D2C2D81D0D3DFF00F85639 /* LaunchScreen.storyboard in Resources */,
 				18D2C2D51D0D3DFF00F85639 /* Assets.xcassets in Resources */,
 				18D2C2D01D0D3DFF00F85639 /* Main.storyboard in Resources */,
+				18AA61191D220858007AA131 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		186F635A1D20EA45005229D1 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run ae5b51b7a3480b75fae0e4af2f5d3b9f7f37b52e a5ed2de0225407e13d761d1ac2eb53970a39218be48691945f3445ff747b8b86";
+		};
 		51DAC4642741A3013CB7175F /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -244,19 +355,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18AA611F1D224FD8007AA131 /* Toilets.swift in Sources */,
+				189380D41D1CDF38009BBFE3 /* HistoryTableViewCell.swift in Sources */,
 				1865753C1D0D452600B6DF02 /* HistoryController.swift in Sources */,
 				1865753A1D0D44FE00B6DF02 /* TrackingController.swift in Sources */,
 				186575341D0D440F00B6DF02 /* FontCollection.swift in Sources */,
+				189380C71D1CC61F009BBFE3 /* DataTaipei.swift in Sources */,
 				186575381D0D44D500B6DF02 /* FinishedController.swift in Sources */,
-				186575411D0D49A800B6DF02 /* RunRecords+CoreDataProperties.swift in Sources */,
+				189380BC1D1CC2CB009BBFE3 /* RunRecords+CoreDataProperties.swift in Sources */,
 				186575361D0D447E00B6DF02 /* MRTableViewController.swift in Sources */,
-				186575421D0D49A800B6DF02 /* RunRecords.swift in Sources */,
+				189380BD1D1CC2CB009BBFE3 /* RunRecords.swift in Sources */,
+				189380BF1D1CC321009BBFE3 /* CaloriesModel.swift in Sources */,
+				189380C11D1CC3D1009BBFE3 /* LogInViewController.swift in Sources */,
 				186575301D0D43DA00B6DF02 /* MrRideModel.swift in Sources */,
 				18D2C2CD1D0D3DFF00F85639 /* ViewController.swift in Sources */,
 				18D2C2CB1D0D3DFF00F85639 /* AppDelegate.swift in Sources */,
 				186575321D0D43FF00B6DF02 /* ColorCollection.swift in Sources */,
+				18AA61211D224FD8007AA131 /* Ubikes.swift in Sources */,
 				18D2C2D31D0D3DFF00F85639 /* Mr_Ride_iOS.xcdatamodeld in Sources */,
 				1865753E1D0D455D00B6DF02 /* MenuTableViewCell.swift in Sources */,
+				189380C51D1CC5EE009BBFE3 /* MapInfoViewController.swift in Sources */,
+				18AA611E1D224FD8007AA131 /* Toilets+CoreDataProperties.swift in Sources */,
+				18AA61201D224FD8007AA131 /* Ubikes+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,10 +490,15 @@
 			baseConfigurationReference = 8BDDCDA2D75D4A524FB9E360 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "Mr-Ride-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "josee.Mr-Ride-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Mr-Ride-iOS/BridgingHeader.h";
 			};
 			name = Debug;
 		};
@@ -382,10 +507,15 @@
 			baseConfigurationReference = 4FBE6F4CF8AD138EF5002FB4 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "Mr-Ride-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "josee.Mr-Ride-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Mr-Ride-iOS/BridgingHeader.h";
 			};
 			name = Release;
 		};

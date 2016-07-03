@@ -10,13 +10,18 @@
 import UIKit
 import QuartzCore
 import SWRevealViewController
-
+import Charts
+import Crashlytics
+import Amplitude_iOS
+import CoreData
+private let managedContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 class ViewController: UIViewController {
     
     @IBOutlet weak var naviLeftBut: UIButton!
     
     
-
+    
+    @IBOutlet weak var lineChartView: LineChartView!
     
     @IBOutlet weak var letsRideBut: UIButton!
     @IBOutlet weak var roundView: UIView!
@@ -31,19 +36,24 @@ class ViewController: UIViewController {
     @IBOutlet weak var labelFixed3: UILabel!
     
     @IBOutlet weak var meanSpeed: UILabel!
+    private var userDefaltkm = NSUserDefaults.standardUserDefaults()
+    private var totoalDist = 0.0
+    private var totalTimes = 0
     let statisticalData = StatisticalModel()
+    private var dataTaipei = DataTaipeiModel()
     override func viewDidLoad() {
         
         
         super.viewDidLoad()
         
-        print(self)
+        Amplitude.instance().logEvent("view_in_home")
+        
+        
         let days = statisticalData._stt.days
         let rideDistance = statisticalData._stt.rideDistance
-        //        let days = ["1", "2", "3", "4", "5", "6"]
-        //        let rideDistance = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0]
         
         
+        getData()
         setUp()
         setUpLebelColor()
         setUpLebelContext()
@@ -52,18 +62,67 @@ class ViewController: UIViewController {
         setUpTitleView()
         setUpLetsRidebut()
         setupRevealViewController()
-        //setChart(days,values: rideDistance)
+        setChart(days,values: rideDistance)
+        updateCoreData()
+//       cleanUpCoreData("Toilets")
+//        cleanUpCoreData("RunRecords")
+//        cleanUpCoreData("Ubikes")
         
         
     }
-    
-    
+    private func cleanUpCoreData(en:String){
+        
+        var request = NSFetchRequest(entityName: en)
+        
+        //request.returnsObjectsAsFaults = false
+        do {
+            var res:NSManagedObject!
+            var results = try managedContext.executeFetchRequest(request)
+            for res:AnyObject in results {
+                managedContext.deleteObject(res as! NSManagedObject)
+            }
+            results.removeAll(keepCapacity: false)
+            
+            try managedContext.save()
+            
+        }catch{
+        }
+        userDefaltkm.setBool(false, forKey: "CoreData")
+
+    }
+    func updateCoreData(){
+        
+        if (userDefaltkm.boolForKey("CoreData") == false){
+            print("Fetching data....")
+            dataTaipei.requestToiletsFromURL("")
+            dataTaipei.requestYouBikesFromURL("")
+        }else{
+            print("Data exist!")
+        }
+        
+    }
+    func getData(){
+        
+        if (userDefaltkm.objectForKey("TotalDistance")  == nil){
+            totoalDist = 0.0
+            
+        }else{
+            
+            totoalDist = userDefaltkm.doubleForKey("TotalDistance")
+            totalTimes = userDefaltkm.integerForKey("Times")
+            //print("did clear!")
+            //            userDefaltkm.setDouble(0.0, forKey: "TotalDistance")
+            //            userDefaltkm.synchronize()
+        }
+    }
     
     @IBAction func startRunBut(sender: UIButton) {
         
-        
+        //Crashlytics.sharedInstance().crash()
+        Amplitude.instance().logEvent("select_ride_in_home")
         let navigationController = self.storyboard?.instantiateViewControllerWithIdentifier("trackingNavi")
         self.presentViewController(navigationController!, animated: true, completion: nil)
+        
         //self.presentViewController(navigationController, animated: true, completion: nil)
         
         
@@ -106,65 +165,71 @@ class ViewController: UIViewController {
     }
     func setUpLebelContext(){
         
+        let convertString = String(format: "%.01f" , totoalDist)
+        
         self.labelFixed1.text = "Total Distance"
         self.labelFixed2.text = "Total Counts"
         self.labelFixed3.text = "Average Speed"
-        self.totalDistance.text = "12.5 km"
-        self.totalCount.text = "14 times"
-        self.meanSpeed.text = "8 km/h"
+        self.totalDistance.text = convertString + " km"
+        self.totalCount.text = "\(totalTimes)" + " times"
+        self.meanSpeed.text = "18 km/h"
+        
         
         
     }
-//    func setChart(dataPoints:[String], values:[Double]){
-//        
-//        
-//        var dataEntries:[ChartDataEntry] = []
-//        for i in 0..<dataPoints.count {
-//            let dataEntry  = ChartDataEntry(value: values[i], xIndex: i)
-//            dataEntries.append(dataEntry)
-//        }
-//        let lineChartDataSet = LineChartDataSet(yVals: dataEntries, label: "")
-//        
-//        let gradColors = [UIColor.mrSeafoamBlueColor(), UIColor.mrLightblueColor()]
-//        let colorLocate:[CGFloat] = [0.0, 1.0]
-//        if let gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), gradColors, colorLocate){
-//            print("here")
-//            
-//            //ChartFill.fillWithLinearGradient(gradient, angle: 90.0)
-//            
-//            
-//        }
-//        
-//        lineChartDataSet.fillColor = UIColor.mrDarkSlateBlueColor()
-//        lineChartDataSet.drawCirclesEnabled = false
-//        lineChartDataSet.drawFilledEnabled = true
-//        lineChartDataSet.drawValuesEnabled = false
-//        lineChartDataSet.drawCubicEnabled = true
-//        lineChartDataSet.lineWidth = 0.0
-//        
-//        
-//        let lineChartData = LineChartData(xVals: dataPoints, dataSet: lineChartDataSet)
-//        
-//        
-//        lineChartView.data = lineChartData
-//        
-//        lineChartView.backgroundColor = UIColor.mrLightblueColor()
-//        lineChartView.gridBackgroundColor = UIColor.mrWaterBlueColor()
-//        lineChartView.drawGridBackgroundEnabled = false
-//        lineChartView.descriptionTextColor = UIColor.clearColor()
-//        lineChartView.xAxis.enabled = false
-//        lineChartView.leftAxis.enabled = false
-//        lineChartView.rightAxis.enabled = false
-//        lineChartView.legend.enabled = false
-//        
-//        
-//        
-//    }
+    func setChart(dataPoints:[String], values:[Double]){
+        
+        
+        var dataEntries:[ChartDataEntry] = []
+        
+        for i in 0..<dataPoints.count {
+            let dataEntry  = ChartDataEntry(value: values[i], xIndex: i)
+            dataEntries.append(dataEntry)
+        }
+        let lineChartDataSet = LineChartDataSet(yVals: dataEntries, label: "")
+        
+        let gradColors = [UIColor.mrSeafoamBlueColor(), UIColor.mrLightblueColor()]
+        let colorLocate:[CGFloat] = [0.0, 1.0]
+        if let gradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), gradColors, colorLocate){
+            print("here")
+            
+            //ChartFill.fillWithLinearGradient(gradient, angle: 90.0)
+            
+            
+        }
+        
+        lineChartDataSet.fillColor = UIColor.mrDarkSlateBlueColor()
+        lineChartDataSet.drawCirclesEnabled = false
+        lineChartDataSet.drawFilledEnabled = true
+        lineChartDataSet.drawValuesEnabled = false
+        lineChartDataSet.drawCubicEnabled = true
+        lineChartDataSet.lineWidth = 0.0
+        
+        
+        let lineChartData = LineChartData(xVals: dataPoints, dataSet: lineChartDataSet)
+        
+        
+        lineChartView.data = lineChartData
+        
+        lineChartView.backgroundColor = UIColor.mrLightblueColor()
+        lineChartView.gridBackgroundColor = UIColor.mrWaterBlueColor()
+        lineChartView.drawGridBackgroundEnabled = false
+        lineChartView.descriptionTextColor = UIColor.clearColor()
+        lineChartView.xAxis.enabled = false
+        lineChartView.leftAxis.enabled = false
+        lineChartView.rightAxis.enabled = false
+        lineChartView.legend.enabled = false
+        
+        
+        
+    }
     
     func setupRevealViewController() {
         
         naviLeftBut.addTarget(self.revealViewController(), action: Selector("revealToggle:"), forControlEvents: UIControlEvents.TouchUpInside)
+        Amplitude.instance().logEvent("select_menu_in_home")
         self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+        
         
     }
     
@@ -203,9 +268,7 @@ class ViewController: UIViewController {
         roundView.layer.shadowOpacity = 0.4
         
     }
-    override func viewWillAppear(animated: Bool) {
-        
-    }
+    
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
     }
     override func didReceiveMemoryWarning() {
@@ -215,6 +278,4 @@ class ViewController: UIViewController {
     
     
 }
-
-
 
