@@ -88,21 +88,6 @@ class HistoryController: UIViewController, UITableViewDelegate, UITableViewDataS
         setUpTableView()
         setupRevealViewController()
         setUpGradient()
-        
-        //        var totaltimes = fetchedResultController.sections?.count
-        //        for time in 0..<totaltimes! {
-        //
-        //            for timesinday in 0..<(fetchedResultController.sections?[time].numberOfObjects)! {
-        //                let ttt = fetchedResultController.sections?[time].objects![timesinday] as! RunRecords
-        //
-        //                days.append(ttt.sortingDate!)
-        //                distance.append(ttt.distance as! Double)
-        //            }
-        //
-        //        }
-        //
-        //        setChart(self.days, values: self.distance)
-        
     }
     
     func setChart(dataPoints:[String], values:[Double]){
@@ -164,8 +149,6 @@ class HistoryController: UIViewController, UITableViewDelegate, UITableViewDataS
         gradientLayer1.frame = self.imageView.frame
         gradientLayer1.colors = [UIColor.mrLightblueColor().CGColor, UIColor.mrPineGreen50Color().colorWithAlphaComponent(0.8).CGColor]
         
-        
-        
         view.layer.insertSublayer(gradientLayer1, atIndex: 1)
     }
     
@@ -205,7 +188,6 @@ class HistoryController: UIViewController, UITableViewDelegate, UITableViewDataS
         imageView = UIImageView(frame: CGRectMake(0, 0,self.view.frame.width, self.view.frame.height))
         imageView.contentMode = UIViewContentMode.ScaleAspectFill
         imageView.clipsToBounds = true
-        //imageView.contentScaleFactor = 1.6
         imageView.image = image
         
         imageView.center = view.center
@@ -219,7 +201,6 @@ class HistoryController: UIViewController, UITableViewDelegate, UITableViewDataS
         self.navigationController?.navigationBar.topItem?.title = "History"
         self.navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName:UIFont.mrTextStyle17Font(),NSForegroundColorAttributeName:UIColor.whiteColor()]
         
-        //cover the black line
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
     }
@@ -301,9 +282,20 @@ class HistoryController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        //        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        //
-        //        let row = indexPath.row
+        
+        let navigationController = self.storyboard?.instantiateViewControllerWithIdentifier("FinishNavi")
+        let runHistory = fetchedResultController.objectAtIndexPath(indexPath) as! RunRecords
+        
+        let vcs = navigationController?.childViewControllers
+        let finishedVC = vcs?.first as? FinishedController
+        
+        self.presentViewController(navigationController!, animated: true, completion: nil)
+        finishedVC?.isFromTracking = false
+        finishedVC?.historyCell = runHistory
+        
+        
+       
+        
         
     }
     
@@ -344,16 +336,9 @@ class HistoryController: UIViewController, UITableViewDelegate, UITableViewDataS
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 34
     }
-    //    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    //        return "yo~"
-    //    }
+    
     func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath){
         
-        //        let record = fetchedResultController.objectAtIndexPath(indexPath)
-        //
-        //        if let name = record.valueForKey("") as? String{
-        //
-        //        }
         
     }
     

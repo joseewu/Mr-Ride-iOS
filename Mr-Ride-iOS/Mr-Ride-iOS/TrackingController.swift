@@ -67,7 +67,8 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     private var startTime: NSDate?
     private var userDefaltkm = NSUserDefaults.standardUserDefaults()
     private var summationDistance:Double?
-    private var trackplay:AVPlayer!
+    private var trackplay:AVAudioPlayer!
+    var fromTracking:Bool?
     //private var player:AVAudioPlayer!
     private var user:User?{
         didSet{
@@ -132,7 +133,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
 
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
         self.userTracks?.removeFirst()
-        
+        self.streamPlayBack(self.userTracks)
         
     }
     func setUpDate(date:NSDate)->(year:String,Month:String, day:String){
@@ -147,6 +148,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     func setUp(){
         timerOutpu.text = "00:00:00:00"
         timerOutpu.backgroundColor = UIColor.clearColor()
+        timerOutpu.borderStyle = .None
         timerOutpu.textColor = UIColor.whiteColor()
         timerOutpu.font = UIFont.mrRobot()
         timerOutpu.textAlignment = NSTextAlignment.Center
@@ -235,19 +237,14 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     }
     
     @IBAction func SClogIn(sender: UIButton) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+       
         dispatch_async(dispatch_get_main_queue()) {
             Session.login(self, completion: { [weak self] result -> Void in
                 
-                if (result.response.isSuccessful){
-                    
-                    
-                    self!.getUser()
-                }
-                
+                if (result.response.isSuccessful){self!.getUser()}
                 
                 })
-            //appDelegate.didLogInSoundCloud()
+
             
         }
         
@@ -278,49 +275,47 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     }
     func getUserTracks(){
         
-        user?.tracks({[weak self] respondsTrack in
+        dispatch_async(dispatch_get_main_queue(),{
+        
+        self.user?.tracks({[weak self] respondsTrack in
             
             if respondsTrack.response.isSuccessful{
                 self?.userTracks = respondsTrack.response.result
             }
             
             })
+        })
         
     }
     
     func getUserFavorites(){
         
-        user?.favorites({[weak self] results in
+          dispatch_async(dispatch_get_main_queue(),{
+        
+        self.user?.favorites({[weak self] results in
             if results.response.isSuccessful{
                 self?.userTracks = results.response.result
             }
         })
-//        user?.tracks({[weak self] respondsTrack in
-//            
-//            if respondsTrack.response.isSuccessful{
-//                self?.userTracks = respondsTrack.response.result
-//            }
-//            
-//            })
-        
+
+        })
     }
     
     func streamPlayBack(tracklists:[Track]?){
         
         //let trackCount = tracklists?.count
         
-        let track = tracklists?[4].streamURL
+        let trackUrl = tracklists?.first?.streamURL
         
-//        player = try? AVAudioPlayer(contentsOfURL: track!)
-//        player.play()
-        trackplay = AVPlayer(URL: track!)
+
+        trackplay = try? AVAudioPlayer(data: NSData(contentsOfURL: trackUrl!)!)
+        trackplay.delegate = self
 
         trackplay.rate = 1.0
         trackplay.volume = 1.0
-        //trackplay.prepareToPlay()
+        trackplay.prepareToPlay()
         trackplay.play()
-        //trackplay.status
-        //trackplay
+ 
         
         
     }
@@ -353,7 +348,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     func calculateCal(time:UInt8)->Double{
         
         let carlCal = CalorieCalculator()
-        let calEstimated = carlCal.kiloCalorieBurned(.Bike, speed: self.speed, weight: 50.0, time: Double(time))
+        let calEstimated = carlCal.kiloCalorieBurned(.Bike, speed: self.speed, weight: 50.0, time: Double(time)/3600)
         return calEstimated
     }
     
@@ -381,7 +376,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         
         timerOutpu.text = strHour + ":" + strMinus + ":" + strSec + ":" + strMsec
         
-        self.speed = (distance / countingTime) * 3.6;
+        self.speed = (distance / Double(sec)) * 3.6;
         self.cal = calculateCal(sec)
         
         
@@ -401,7 +396,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     
     @IBAction func dimissCurrentView(sender: UIButton) {
         
-        var presentingViewController: UIViewController! = self.presentingViewController
+        let presentingViewController: UIViewController! = self.presentingViewController
         self.dismissViewControllerAnimated(false) {
             // go back to MainMenuView
             presentingViewController.dismissViewControllerAnimated(true, completion: nil)
@@ -448,11 +443,14 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         updatingRidingInfo()
     }
     
-    
+   
     
     func saveWhenFinish(){
         
-        trackplay.pause()
+        
+        if (trackplay != nil){
+            trackplay.pause()
+        }
         
         if (self.long.isEmpty || self.long.isEmpty) {
             self.long.insert([0], atIndex: 0)
@@ -476,6 +474,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
             
             fatalError("Failure to save context: \(error)")
         }
+        
         self.count += 1
         
         self.summationDistance! += self.distance
@@ -565,9 +564,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
                                 self.startPaulseBut.clipsToBounds = true;
                             }
                     })
-                    //                    self.startPaulseBut.layer.cornerRadius = 10;
-                    //                    self.startPaulseBut.layer.masksToBounds = true;
-                    //                    self.startPaulseBut.clipsToBounds = true;
+                   
                     
                     
                 },
@@ -628,18 +625,16 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         
         
         saveWhenFinish()
+
         
-        //var vc = self.storyboard?.instantiateViewControllerWithIdentifier("FinishedController") as! FinishedController
-        
-        //self.navigationController?.pushViewController(vc, animated: true)
-        //        self.navigationController?.presentViewController(vc, animated: true, completion: nil)
         let navigationController = self.storyboard?.instantiateViewControllerWithIdentifier("FinishNavi")
+        
+        let vcs = navigationController?.childViewControllers
+        let finishedVC = vcs?.first as? FinishedController
+      
         self.presentViewController(navigationController!, animated: true, completion: nil)
-        //        let navigationController = self.storyboard?.instantiateViewControllerWithIdentifier("FinishNavi") as! UINavigationController
-        //        let  segueToFinished = SWRevealViewControllerSeguePushController.init(identifier: SWSegueRightIdentifier, source: self, destination: navigationController)
-        //        segueToFinished.perform()
-        
-        
+         finishedVC?.isFromTracking = true
+
         
     }
     

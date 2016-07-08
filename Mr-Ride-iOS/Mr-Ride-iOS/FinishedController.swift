@@ -37,7 +37,8 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
     @IBOutlet weak var Time: UILabel!
     
     
-    
+    var isFromTracking:Bool = true
+    var historyCell:RunRecords?
     private var long = [Double]()
     private var lat = [Double]()
     private var date:String = ""
@@ -51,7 +52,7 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
+        print(isFromTracking)
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.activityType = .Fitness
@@ -60,8 +61,11 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
         self.locationManager.requestWhenInUseAuthorization()
         
         self.mapView.delegate = self
-        
+        if isFromTracking {
         loadCoreData()
+        }else {
+            loadFromHistory()
+        }
         setUpGardientLayer()
         setUpCloseButton()
         
@@ -70,6 +74,10 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
         drawRoute(self.latForPath,locationLong: self.longForPath)
         
         setUpNavigationBar()
+        
+        
+
+        
         
     }
     
@@ -110,6 +118,7 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
         Time.text = "\(self.seconds)"
         Time.textColor = UIColor.whiteColor()
         Time.font = UIFont.mrTextStyle15Font()
+        
     }
     func showMap(){
         
@@ -118,10 +127,46 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
         mapView.camera = GMSCameraPosition(target: finishCord, zoom: 15, bearing: 0, viewingAngle: 0)
     }
     
-    
+    func loadFromHistory(){
+        if (historyCell != nil){
+            
+            self.date = (historyCell?.valueForKey("date") as! String)
+            var lat = (historyCell?.valueForKey("lat") as! [[Double]]).last
+            var latarg = historyCell?.valueForKey("lat") as! [[Double]]
+            var longarg = historyCell?.valueForKey("long") as! [[Double]]
+            var long = (historyCell?.valueForKey("long") as! [[Double]]).last
+            self.cal = (historyCell?.valueForKey("cal") as! Double)
+            self.distance = (historyCell?.valueForKey("distance") as! Double)
+            self.seconds = (historyCell?.valueForKey("time") as! Int)
+            
+            if self.seconds == 0 {
+                self.speed = 0
+            }else{
+                
+                self.speed = (self.distance / Double(self.seconds))*3.6
+                
+                parPolyline(lat: latarg,long: longarg)
+                
+                
+            }
+            if (lat?.last != nil && long?.last != nil){
+                
+                self.lat = lat!
+                self.long = long!
+                
+                
+            }else{
+                locationManager.startUpdatingLocation()
+                
+            }
+            
+            
+        
+        }
+    }
     
     func drawRoute(locationLat: [[Double]], locationLong: [[Double]]){
-        print(locationLat)
+        
         showMap()
         
         var path = GMSMutablePath()
@@ -183,6 +228,7 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
     func loadCoreData(){
         
         let request = NSFetchRequest(entityName: "RunRecords")
+        
         request.returnsObjectsAsFaults = false
         do {
             
@@ -219,18 +265,10 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
                     
                 }else{
                     locationManager.startUpdatingLocation()
-                    
-                    
+  
                 }
-                
             }
-            
-            
         }catch{
-            
-            
-            
-            
         }
     }
     
@@ -241,9 +279,6 @@ class FinishedController: UIViewController,CLLocationManagerDelegate,GMSMapViewD
             
             if arg1[i].count == 1 {
                 
-                
-                //                self.latForPath[i].append(arg1[i].first!)
-                //                self.latForPath[i].append(arg1[i].first!)
                 var lat1 = arg1[i].first!
                 var long1 = arg2[i].first!
                 
