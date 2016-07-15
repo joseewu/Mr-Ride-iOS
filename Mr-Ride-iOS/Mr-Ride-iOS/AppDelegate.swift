@@ -35,11 +35,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Soundcloud.clientIdentifier = "70dd6cb1f3807a0d2032161d666b5f87"
         Soundcloud.clientSecret = "74ee9d23325f63db4a93446d4ea8e44c"
         Soundcloud.redirectURI = "http://dailystream.com/callback"
-        GMSServices.provideAPIKey("AIzaSyB5gi9e020nSNQPtt0aDEi7h4XvEfML_Hk")
+        //GMSServices.provideAPIKey("AIzaSyB5gi9e020nSNQPtt0aDEi7h4XvEfML_Hk")
+        GMSServices.provideAPIKey("AIzaSyBHhzfBYR6IYG5KZ5AJuOWTk2xuLBtvv1o")
+        //AIzaSyBHhzfBYR6IYG5KZ5AJuOWTk2xuLBtvv1o
         Fabric.with([Crashlytics.self])
-        // TODO: Move this to where you establish a user session
-        //crashlytics
-        self.logUser()
+                self.logUser()
         //amplitude zone
         Amplitude.instance().initializeApiKey("15a205b0796949b393d119ecdd34cd97")
         //Google analytics zone
