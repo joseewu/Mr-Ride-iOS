@@ -69,18 +69,20 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     private var summationDistance:Double?
     private var trackplay:AVAudioPlayer!
     var fromTracking:Bool?
-    //private var player:AVAudioPlayer!
+   
     private var user:User?{
         didSet{
-            //getUserTracks()
-            getUserFavorites()
+             dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            self?.getUserFavorites()
+            }
         }
     }
     
     private var userTracks:[Track]?{
         didSet{
-            
-            streamPlayBack(userTracks)
+             dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            self?.streamPlayBack(self?.userTracks)
+            }
         }
     }
     private var imgURL:NSURL?
@@ -88,10 +90,6 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     var store:NSTimeInterval = 0
     
     
-    
-    
-    
-    //private let managedContext = AppDelegate().managedObjectContext
     private let managedContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     
@@ -103,7 +101,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
             summationDistance = 0.0
             self.count = 0
         }else{
-            //print("did clear!")
+            
             summationDistance = userDefaltkm.doubleForKey("TotalDistance")
             self.count = userDefaltkm.integerForKey("Times")
             //userDefaltkm.setDouble(0.0, forKey: "TotalDistance")
@@ -146,6 +144,7 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
         
     }
     func setUp(){
+        
         timerOutpu.text = "00:00:00:00"
         timerOutpu.backgroundColor = UIColor.clearColor()
         timerOutpu.borderStyle = .None
@@ -348,7 +347,16 @@ class TrackingController:UIViewController,CLLocationManagerDelegate,GMSMapViewDe
     func calculateCal(time:UInt8)->Double{
         
         let carlCal = CalorieCalculator()
-        let calEstimated = carlCal.kiloCalorieBurned(.Bike, speed: self.speed, weight: 50.0, time: Double(time)/3600)
+        var userWeight:Double {
+            if let userweight = userDefaltkm.valueForKey("uerWeight") as? Double{
+                return userweight
+            }else{
+                return 0
+            }
+        }
+        
+        
+        let calEstimated = carlCal.kiloCalorieBurned(.Bike, speed: self.speed, weight: userWeight, time: Double(time)/3600)
         return calEstimated
     }
     

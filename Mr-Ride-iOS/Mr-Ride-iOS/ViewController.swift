@@ -39,7 +39,6 @@ class ViewController: UIViewController {
     private var userDefaltkm = NSUserDefaults.standardUserDefaults()
     private var totoalDist = 0.0
     private var totalTimes = 0
-    let statisticalData = StatisticalModel()
     private var dataTaipei = DataTaipeiModel()
     override func viewDidLoad() {
         
@@ -49,8 +48,8 @@ class ViewController: UIViewController {
         Amplitude.instance().logEvent("view_in_home")
         
         
-        let days = statisticalData._stt.days
-        let rideDistance = statisticalData._stt.rideDistance
+        let days = ["a","b","c","d","e"]
+        let rideDistance:[Double] = [10,0,10,20,15]
         
         
         getData()
